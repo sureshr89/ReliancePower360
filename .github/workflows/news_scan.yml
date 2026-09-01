@@ -3,7 +3,7 @@ name: Reliance Power 360 News Scan
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 */6 * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
