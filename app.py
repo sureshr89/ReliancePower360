@@ -68,6 +68,8 @@ if not news.empty:
         news["_ist"]=news["_pub"].dt.tz_convert(IST)
         news["_date"]=news["_ist"].dt.date
     else:
+        news["_pub"]=pd.NaT
+        news["_ist"]=pd.NaT
         news["_date"]=pd.NaT
 
     used_today=news[news["_date"]==today].sort_values("_pub",ascending=False)
