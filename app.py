@@ -3,11 +3,16 @@ import json
 from pathlib import Path
 import pandas as pd
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 DATA = Path("data")
+IST = ZoneInfo("Asia/Kolkata")
+# Refresh the dashboard UI every 15 seconds. GitHub scanning remains on its own schedule.\nst_autorefresh(interval=15_000, limit=None, key="rpower_live_refresh")
 st.set_page_config(page_title="Reliance Power 360", page_icon="⚡", layout="wide", initial_sidebar_state="collapsed")
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=10)
 def load_json(path):
     try:
         return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
@@ -59,6 +64,8 @@ with left:
 with right:
     st.markdown("**Latest analysis**")
     st.caption(scan)
+    now_ist=datetime.now(IST)
+    st.caption(f"🟢 Live dashboard • {now_ist.strftime('%d %b %Y, %I:%M:%S %p IST')}")
 
 if not report:
     st.warning("Waiting for the first successful live scan.")
