@@ -75,6 +75,18 @@ if not news.empty:
     used_today=news[news["_date"]==today].sort_values("_pub",ascending=False)
     used_yesterday=news[news["_date"]==yesterday].sort_values("_pub",ascending=False)
 
+    # Safety fallback: if the report is stale but dated news is already visible,
+    # derive a provisional direction from the same dated evidence instead of WAITING.
+    visible_used=pd.concat([used_today,used_yesterday],ignore_index=True)
+    if len(visible_used)>0 and str(forecast.get("outlook","WAITING")).upper()=="WAITING":
+        sentiment=visible_used.get("sentiment",pd.Series(dtype=str)).astype(str).str.upper()
+        bullish=int((sentiment=="BULLISH").sum())
+        bearish=int((sentiment=="BEARISH").sum())
+        score=max(0,min(100,50 + (bullish-bearish)*10))
+        direction="BULLISH" if score>=60 else "BEARISH" if score<=40 else "NEUTRAL"
+        forecast={"outlook":direction,"score":round(score,1),"provisional":True}
+        st.caption("⚠️ Fresh dated news is available but the saved analysis report is stale. Showing a provisional direction until the next analysis scan writes the official prediction.")
+
     st.header("📅 News Used Before This Prediction")
 
     st.subheader(f"🟢 {today.strftime('%d %b %Y')} — {len(used_today)} articles")
