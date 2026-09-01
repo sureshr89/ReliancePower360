@@ -56,10 +56,6 @@ st.title("⚡ Reliance Power 360°")
 st.caption("Date-based news prediction • end-of-day verification")
 st.caption(f"Prediction date: {today.strftime('%d %b %Y')}")
 
-st.header("🔮 Current Prediction")
-c1,c2=st.columns(2)
-c1.metric("Prediction",f"{mood(forecast.get('outlook','WAITING'))} {forecast.get('outlook','WAITING')}")
-c2.metric("Score",f"{forecast.get('score','—')}/100")
 st.caption(f"News used before this prediction: {yesterday.strftime('%d %b %Y')} and {today.strftime('%d %b %Y')} (only news published before the prediction time should count).")
 
 if not news.empty:
@@ -86,6 +82,13 @@ if not news.empty:
         direction="BULLISH" if score>=60 else "BEARISH" if score<=40 else "NEUTRAL"
         forecast={"outlook":direction,"score":round(score,1),"provisional":True}
         st.caption("⚠️ Fresh dated news is available but the saved analysis report is stale. Showing a provisional direction until the next analysis scan writes the official prediction.")
+
+    st.header("🔮 Current Prediction")
+    c1,c2=st.columns(2)
+    c1.metric("Prediction",f"{mood(forecast.get('outlook','WAITING'))} {forecast.get('outlook','WAITING')}")
+    c2.metric("Score",f"{forecast.get('score','—')}/100")
+    if forecast.get("provisional"):
+        st.caption("⚠️ Provisional prediction from currently dated evidence; the next completed scan will replace it with the stored analysis prediction.")
 
     st.header("📅 News Used Before This Prediction")
 
