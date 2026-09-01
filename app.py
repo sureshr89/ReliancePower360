@@ -44,6 +44,9 @@ price=report.get("price",{})
 today=report.get("today_explanation",{})
 relation=report.get("news_price_relation",{})
 forecast=report.get("forecast",{})
+now_ist=datetime.now(IST)
+scan_ist=pd.to_datetime(scan,utc=True,errors="coerce")
+scan_label=scan_ist.tz_convert(IST).strftime("%d %b %Y, %I:%M:%S %p IST") if not pd.isna(scan_ist) else str(scan)
 scan=report.get("generated_at","Waiting for live scan")
 
 st.markdown("""
@@ -63,7 +66,7 @@ with left:
     st.caption("Live market intelligence • fresh news • price drivers • forward scenarios")
 with right:
     st.markdown("**Latest analysis**")
-    st.caption(scan)
+    st.caption(f"Analysis generated: {scan_label}")
     now_ist=datetime.now(IST)
     st.caption(f"🟢 Auto-refresh every 5 minutes • {now_ist.strftime('%d %b %Y, %I:%M:%S %p IST')}")
 
@@ -104,11 +107,12 @@ with side:
 st.markdown('<div class="section-title">Forward Outlook</div>', unsafe_allow_html=True)
 st.caption("Scenario signals derived from fresh news, weighted source quality and current momentum. Not a price target.")
 a,b,c=st.columns(3)
+targets={"tomorrow":(now_ist+pd.Timedelta(days=1)).strftime("%d %b %Y"),"next_week":(now_ist+pd.Timedelta(days=7)).strftime("%d %b %Y"),"next_few_months":(now_ist+pd.Timedelta(days=90)).strftime("%d %b %Y")}
 for col,key,label in [(a,"tomorrow","Tomorrow"),(b,"next_week","Next Week"),(c,"next_few_months","Next Few Months")]:
     x=forecast.get(key,{})
     with col:
         outlook=x.get("outlook","WAITING")
-        st.metric(label, f"{mood(outlook)} {outlook}", f"{x.get('score','—')}/100")
+        st.metric(f"{label} • {targets[key]}", f"{mood(outlook)} {outlook}", f"{x.get('score','—')}/100")
 st.caption(forecast.get("reason","Forecast will become available when price and fresh-news inputs are both available."))
 
 # ---------- CHARTS ----------
@@ -161,9 +165,11 @@ else:
         s=str(r.get("sentiment","NEUTRAL")).upper()
         icon=mood(s)
         date=str(r.get("published",""))
+        pub=pd.to_datetime(date,utc=True,errors="coerce")
+        published_label=pub.tz_convert(IST).strftime("%d %b %Y, %I:%M %p IST") if not pd.isna(pub) else "Publication time unavailable"
         with st.expander(f"{icon} {r.get('title','Untitled')}"):
             if str(r.get("summary","")).strip(): st.write(str(r.get("summary","")))
-            st.caption(f"{r.get('source','Unknown')} • {date}")
+            st.caption(f"{r.get('source','Unknown')} • Published: {published_label}")
             link=str(r.get("link",""))
             if link.startswith("http"): st.link_button("Read original source",link)
 
