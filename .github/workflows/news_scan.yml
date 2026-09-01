@@ -52,6 +52,6 @@ jobs:
         run: |
           git config user.name "ReliancePower360 Bot"
           git config user.email "actions@github.com"
-          git add data/latest_report.json data/latest_news.csv data/signal_history.csv
+          git add data/latest_report.json data/latest_news.csv data/signal_history.csv data/price_history.csv data/forecast_audit.csv
           git diff --cached --quiet || git commit -m "Update Reliance Power 360 intelligence"
           git push
