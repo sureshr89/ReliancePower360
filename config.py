@@ -1,29 +1,25 @@
 STOCK_NAME = "Reliance Power"
-STOCK_SYMBOL = "RELIANCEPWR"
-NEWS_LIMIT_PER_SOURCE = 30
-
-NEWS_QUERIES = [
-    '"Reliance Power"',
-    '"Reliance Power" stock',
-    '"Reliance Power" results OR earnings',
-    '"Reliance Power" debt OR project OR order',
-    '"Reliance Power" regulatory',
-]
-
+STOCK_QUERY = "Reliance Power"
 RSS_SOURCES = [
-    "https://news.google.com/rss/search?q=Reliance+Power&hl=en-IN&gl=IN&ceid=IN:en",
-    "https://news.google.com/rss/search?q=Reliance+Power+stock&hl=en-IN&gl=IN&ceid=IN:en",
-    "https://news.google.com/rss/search?q=Reliance+Power+results+OR+project+OR+debt&hl=en-IN&gl=IN&ceid=IN:en",
+    ("Google News - Company", "https://news.google.com/rss/search?q=%22Reliance+Power%22&hl=en-IN&gl=IN&ceid=IN:en"),
+    ("Google News - Stock", "https://news.google.com/rss/search?q=%22Reliance+Power%22+stock&hl=en-IN&gl=IN&ceid=IN:en"),
+    ("Google News - Projects", "https://news.google.com/rss/search?q=%22Reliance+Power%22+project+OR+order+OR+results+OR+debt&hl=en-IN&gl=IN&ceid=IN:en"),
+    ("Google News - Sector", "https://news.google.com/rss/search?q=India+power+sector+electricity+renewable&hl=en-IN&gl=IN&ceid=IN:en"),
 ]
-
-BULLISH_WORDS = [
-    "profit", "growth", "surge", "gain", "rally", "order", "contract",
-    "approval", "expansion", "reduction in debt", "turnaround", "record",
-    "upgrade", "strong", "positive", "investment", "funding", "wins"
-]
-
-BEARISH_WORDS = [
-    "loss", "decline", "fall", "drop", "debt", "default", "downgrade",
-    "penalty", "investigation", "lawsuit", "delay", "weak", "concern",
-    "risk", "selloff", "fraud", "dispute"
-]
+GDELT_QUERY = '"Reliance Power"'
+GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
+OFFICIAL_PAGES = {
+    "Reliance Power": "https://www.reliancepower.co.in/",
+    "Press Releases": "https://www.reliancepower.co.in/press-release",
+    "Regulatory Filings": "https://www.reliancepower.co.in/filing-with-regulatory",
+    "Public Notices": "https://www.reliancepower.co.in/public-notice",
+}
+SOURCE_RELIABILITY = {
+    "OFFICIAL_RPOWER": 1.00,
+    "EXCHANGE": 0.98,
+    "GOVERNMENT": 0.95,
+    "GDELT": 0.75,
+    "RSS": 0.70,
+}
+RELEVANCE_TERMS = ["reliance power", "reliancepwr", "rosa power", "sasan power", "vidarbha industries power"]
+SECTOR_TERMS = ["power sector", "electricity", "thermal power", "renewable energy", "coal", "electricity demand", "power generation"]
