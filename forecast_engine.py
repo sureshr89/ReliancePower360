@@ -19,6 +19,10 @@ def _news_time(df):
 def split_prediction_news(news):
     if news.empty:return news,news,{"today":0,"yesterday":0,"used_total":0}
     x=_news_time(news)
+    # Only direct Reliance Power articles with reliable publication timestamps
+    # may influence a prediction.
+    if "prediction_eligible" in x.columns:
+        x=x[x["prediction_eligible"].astype(str).str.lower().isin(["true","1","yes"])]
     now=datetime.now(IST)
     today=now.date()
     yesterday=(now-timedelta(days=1)).date()
