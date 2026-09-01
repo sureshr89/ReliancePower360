@@ -11,7 +11,27 @@ except Exception:
     st_autorefresh = None
 
 DATA=Path("data"); IST=ZoneInfo("Asia/Kolkata")
-st.set_page_config(page_title="Reliance Power 360",page_icon="⚡",layout="wide")
+st.set_page_config(page_title="Reliance Power 360",page_icon="⚡",layout="centered",initial_sidebar_state="collapsed")
+st.markdown("""
+<style>
+.block-container{max-width:760px;padding:1rem .8rem 3rem}
+h1{font-size:1.65rem!important}
+h2{font-size:1.2rem!important;margin-top:1.4rem!important}
+div[data-testid="stMetric"]{border:1px solid rgba(128,128,128,.22);border-radius:12px;padding:.55rem .6rem}
+div[data-testid="stMetricLabel"]{font-size:.72rem}
+div[data-testid="stMetricValue"]{font-size:1.05rem}
+div[data-testid="stMetricDelta"]{font-size:.75rem}
+.stExpander{border-radius:10px}
+@media(max-width:600px){
+ .block-container{padding:.7rem .55rem 2rem}
+ h1{font-size:1.4rem!important}
+ h2{font-size:1.05rem!important}
+ div[data-testid="stMetric"]{padding:.42rem}
+ div[data-testid="stMetricLabel"]{font-size:.62rem}
+ div[data-testid="stMetricValue"]{font-size:.88rem}
+}
+</style>
+""",unsafe_allow_html=True)
 if st_autorefresh is not None:
     st_autorefresh(interval=300000,limit=None,key="five_min_refresh")
 
@@ -35,19 +55,20 @@ st.title("⚡ Reliance Power 360°")
 st.caption("Date-based news intelligence • current-session prediction • EOD verification")
 st.caption(f"Analysis: {scan_txt} • Auto-refresh: 5 minutes")
 
-a,b,c,d,e=st.columns(5)
-a.metric("Price",f"₹{p.get('last_price','—')}")
-chg=p.get("daily_change_pct"); b.metric("Today",f"{chg:+.2f}%" if isinstance(chg,(int,float)) else "—")
-c.metric("News Score",f"{s.get('news_score','—')}/100")
+top1,top2=st.columns(2)
+top1.metric("Price",f"₹{p.get('last_price','—')}")
+chg=p.get("daily_change_pct"); top2.metric("Move",f"{chg:+.2f}%" if isinstance(chg,(int,float)) else "—")
+top3,top4=st.columns(2)
+top3.metric("News Score",f"{s.get('news_score','—')}/100")
+top4.metric("Evidence Used",window.get("used_total",0))
 today_label=now.strftime("%d %b")
 yesterday_label=(now-pd.Timedelta(days=1)).strftime("%d %b")
-d.metric(f"{today_label} News Used",window.get("today_articles",0))
-e.metric(f"{yesterday_label} News Used",window.get("yesterday_articles",0))
+st.caption(f"News dates: {today_label} = {window.get('today_articles',0)} • {yesterday_label} = {window.get('yesterday_articles',0)}")
 
 st.header(f"🔮 Prediction for {now.strftime('%d %b %Y')}")
 st.caption(f"Primary news dates: {now.strftime('%d %b %Y')} and {(now-pd.Timedelta(days=1)).strftime('%d %b %Y')}. Weekly and monthly predictions are currently disabled.")
 pred=f.get("current_session",{})
-x,y=st.columns([1,2])
+x,y=st.columns(2)
 x.metric("Current / Remaining Session",f"{mood(pred.get('outlook'))} {pred.get('outlook','WAITING')}",f"{pred.get('score','—')}/100")
 y.info(f.get("reason","Waiting for enough news and price data."))
 st.caption(
@@ -66,14 +87,13 @@ for item in drivers.get("today_drivers",[])[:8]:
     st.caption(f"Source: {item.get('source','Unknown')} • Published: {ts} • Impact: {item.get('impact','—')}")
 
 st.header("📊 Price & News")
-l,rcol=st.columns(2)
+l,rcol=st.columns(1)
 with l:
     if not ph.empty and {"date","close"}.issubset(ph.columns):
         q=ph.copy();q["date"]=pd.to_datetime(q["date"],errors="coerce");q=q.dropna().sort_values("date").set_index("date")
         st.line_chart(q[["close"]],height=280)
-with rcol:
-    if not n.empty and "sentiment" in n.columns:
-        st.bar_chart(n["sentiment"].fillna("NEUTRAL").value_counts(),height=280)
+if not n.empty and "sentiment" in n.columns:
+    st.bar_chart(n["sentiment"].fillna("NEUTRAL").value_counts(),height=220)
 
 st.header("📅 News Analysis — Date Wise")
 st.caption("Prediction evidence is separated by exact publication date. Only the two dates shown below should influence this prediction.")
@@ -89,10 +109,10 @@ if not n.empty:
     dated_today=n[n["_date"]==today_date]
     dated_yesterday=n[n["_date"]==yesterday_date]
     excluded=n[~n.index.isin(pd.concat([dated_today,dated_yesterday]).index)]
-    a1,a2,a3=st.columns(3)
-    a1.metric(f"Today • {today_date.strftime('%d %b %Y')}",len(dated_today))
-    a2.metric(f"Yesterday • {yesterday_date.strftime('%d %b %Y')}",len(dated_yesterday))
-    a3.metric("Excluded from prediction",len(excluded))
+    a1,a2=st.columns(2)
+    a1.metric(today_date.strftime("%d %b %Y"),len(dated_today))
+    a2.metric(yesterday_date.strftime("%d %b %Y"),len(dated_yesterday))
+    st.caption(f"Excluded from prediction: {len(excluded)} articles")
     with st.expander(f"🟢 TODAY — {today_date.strftime('%d %b %Y')} — {len(dated_today)} articles",expanded=True):
         for _,row in dated_today.sort_values("_pub",ascending=False).iterrows():
             st.markdown(f"{mood(row.get('sentiment'))} **{row.get('title','Untitled')}**")
