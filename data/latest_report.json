@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-01T22:25:41.268Z",
+  "company": "Reliance Power",
+  "model_version": "1.1-multisource-360",
+  "summary": {
+    "news_score": 50,
+    "news_outlook": "NEUTRAL",
+    "confidence": 0,
+    "article_count": 0,
+    "bullish_count": 0,
+    "bearish_count": 0,
+    "neutral_count": 0
+  },
+  "timeframes": {
+    "few_days": {
+      "score": 50,
+      "outlook": "NEUTRAL",
+      "confidence": 0
+    },
+    "few_weeks": {
+      "score": 50,
+      "outlook": "NEUTRAL",
+      "confidence": 0
+    },
+    "few_months": {
+      "score": 50,
+      "outlook": "NEUTRAL",
+      "confidence": 0
+    }
+  },
+  "source_breakdown": {},
+  "top_bullish_news": [],
+  "top_bearish_news": [],
+  "market_context": {}
+}
