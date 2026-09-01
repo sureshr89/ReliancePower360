@@ -112,5 +112,54 @@ else:
         accuracy=float(audit["matched"].mean()*100)
         st.metric("Current Recorded Match Rate",f"{accuracy:.1f}%")
 
+# CHARTS
+st.subheader("📊 Visual Intelligence")
+
+if not news.empty:
+    left, right = st.columns(2)
+    with left:
+        st.markdown("#### Sentiment Distribution")
+        if "sentiment" in news.columns:
+            counts = news["sentiment"].fillna("NEUTRAL").value_counts()
+            st.bar_chart(counts)
+    with right:
+        st.markdown("#### News Source Distribution")
+        if "source_type" in news.columns:
+            st.bar_chart(news["source_type"].fillna("Unknown").value_counts())
+
+# Price history line chart
+price_history = load_csv(DATA / "price_history.csv")
+if not price_history.empty and {"date", "close"}.issubset(price_history.columns):
+    st.markdown("#### 📈 Price Trend")
+    ph = price_history.copy()
+    ph["date"] = pd.to_datetime(ph["date"], errors="coerce")
+    ph = ph.dropna(subset=["date"]).sort_values("date").set_index("date")
+    st.line_chart(ph["close"])
+
+# Historical intelligence score
+history = load_csv(DATA / "signal_history.csv")
+if not history.empty and "score" in history.columns:
+    st.markdown("#### 🧠 Intelligence Score History")
+    h = history.copy()
+    if "generated_at" in h.columns:
+        h["generated_at"] = pd.to_datetime(h["generated_at"], errors="coerce")
+        h = h.dropna(subset=["generated_at"]).sort_values("generated_at").set_index("generated_at")
+    st.line_chart(h["score"])
+
+# Pie chart using native Altair
+if not news.empty and "sentiment" in news.columns:
+    try:
+        import altair as alt
+        pie_data = news["sentiment"].fillna("NEUTRAL").value_counts().rename_axis("sentiment").reset_index(name="count")
+        st.markdown("#### 🥧 Bullish vs Bearish vs Neutral")
+        pie = alt.Chart(pie_data).mark_arc().encode(
+            theta=alt.Theta("count:Q"),
+            color=alt.Color("sentiment:N"),
+            tooltip=["sentiment:N", "count:Q"],
+        )
+        st.altair_chart(pie, use_container_width=True)
+    except Exception:
+        pass
+
 st.divider()
 st.caption("Research tool only. News can be correlated with a price move without proving it caused the move. Forecasts are probabilistic, not guaranteed.")
