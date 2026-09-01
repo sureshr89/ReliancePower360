@@ -19,12 +19,21 @@ st.set_page_config(
 st.title("⚡ Reliance Power 360° Intelligence")
 st.caption("Multi-source news intelligence • Official disclosures • Bullish/Bearish outlook")
 
-if not REPORT_FILE.exists():
-    st.warning("No analysis report yet. Run the GitHub Actions workflow first, then refresh this page.")
-    st.stop()
-
-with open(REPORT_FILE, "r", encoding="utf-8") as f:
-    report = json.load(f)
+if REPORT_FILE.exists():
+    with open(REPORT_FILE, "r", encoding="utf-8") as f:
+        report = json.load(f)
+else:
+    report = {
+        "generated_at": "Waiting for first data scan",
+        "model_version": "1.1-multisource-360",
+        "summary": {"news_score": 50, "news_outlook": "NEUTRAL", "confidence": 0, "article_count": 0, "bullish_count": 0, "bearish_count": 0, "neutral_count": 0},
+        "timeframes": {
+            "few_days": {"score": 50, "outlook": "NEUTRAL", "confidence": 0},
+            "few_weeks": {"score": 50, "outlook": "NEUTRAL", "confidence": 0},
+            "few_months": {"score": 50, "outlook": "NEUTRAL", "confidence": 0},
+        },
+    }
+    st.warning("Dashboard is live. Waiting for the first news scan.")
 
 summary = report.get("summary", {})
 timeframes = report.get("timeframes", {})
