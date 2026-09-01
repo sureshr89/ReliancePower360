@@ -60,7 +60,7 @@ st.header("🔮 Current Prediction")
 c1,c2=st.columns(2)
 c1.metric("Prediction",f"{mood(forecast.get('outlook','WAITING'))} {forecast.get('outlook','WAITING')}")
 c2.metric("Score",f"{forecast.get('score','—')}/100")
-st.caption(f"News dates used: {today.strftime('%d %b %Y')} + {yesterday.strftime('%d %b %Y')}")
+st.caption(f"News used before this prediction: {yesterday.strftime('%d %b %Y')} and {today.strftime('%d %b %Y')} (only news published before the prediction time should count).")
 
 if not news.empty:
     if "published" in news.columns:
@@ -73,7 +73,7 @@ if not news.empty:
     used_today=news[news["_date"]==today].sort_values("_pub",ascending=False)
     used_yesterday=news[news["_date"]==yesterday].sort_values("_pub",ascending=False)
 
-    st.header("📅 News Used for Prediction")
+    st.header("📅 News Used Before This Prediction")
 
     st.subheader(f"🟢 {today.strftime('%d %b %Y')} — {len(used_today)} articles")
     if used_today.empty:
@@ -97,8 +97,8 @@ else:
     st.info("No collected news data available yet.")
 
 st.divider()
-st.header("🎯 Prediction Result — EOD Audit")
-st.caption("After market close, the prediction is checked against the actual end-of-day price movement.")
+st.header("🎯 EOD Result — Did Our Prediction Win?")
+st.caption("Each prediction is compared with the actual end-of-day direction. RIGHT = win, WRONG = loss.")
 
 if eod.empty:
     st.info("No completed EOD audit yet.")
@@ -116,8 +116,8 @@ else:
         total=right+wrong
         accuracy=(right/total*100) if total else 0
         a,b,c=st.columns(3)
-        a.metric("Right",right)
-        b.metric("Wrong",wrong)
-        c.metric("Accuracy",f"{accuracy:.1f}%")
+        a.metric("Wins / Right",right)
+        b.metric("Losses / Wrong",wrong)
+        c.metric("Win Percentage",f"{accuracy:.1f}%")
 
 st.caption("Research tool only. Prediction outcomes are recorded for audit and improvement.")
