@@ -94,7 +94,9 @@ with main:
     if drivers:
         for x in drivers[:5]:
             st.markdown(f"{'🟢' if x.get('direction')=='positive' else '🔴' if x.get('direction')=='negative' else '⚪'} **{x.get('title','Untitled')}**")
-            st.caption(f"{x.get('source','Unknown')} • Impact {x.get('impact','—')}")
+            driver_pub=pd.to_datetime(x.get("published",""),utc=True,errors="coerce")
+            driver_time=driver_pub.tz_convert(IST).strftime("%d %b %Y, %I:%M %p IST") if not pd.isna(driver_pub) else "Publication time unavailable"
+            st.caption(f"{x.get('source','Unknown')} • Published: {driver_time} • Impact {x.get('impact','—')}")
     else:
         st.caption("No validated same-day drivers available yet.")
 with side:
@@ -169,7 +171,7 @@ else:
         published_label=pub.tz_convert(IST).strftime("%d %b %Y, %I:%M %p IST") if not pd.isna(pub) else "Publication time unavailable"
         with st.expander(f"{icon} {r.get('title','Untitled')}"):
             if str(r.get("summary","")).strip(): st.write(str(r.get("summary","")))
-            st.caption(f"{r.get('source','Unknown')} • Published: {published_label}")
+            st.caption(f"Source: {r.get('source','Unknown')} • Published: {published_label}")
             link=str(r.get("link",""))
             if link.startswith("http"): st.link_button("Read original source",link)
 
