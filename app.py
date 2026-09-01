@@ -65,6 +65,35 @@ with rcol:
     if not n.empty and "sentiment" in n.columns:
         st.bar_chart(n["sentiment"].fillna("NEUTRAL").value_counts(),height=280)
 
+st.header("📅 News Analysis — Date Wise")
+st.caption("Prediction evidence is separated by publication date. Only TODAY and YESTERDAY should influence the current-session prediction.")
+if not n.empty:
+    n["_pub"]=pd.to_datetime(n.get("published"),utc=True,errors="coerce")
+    n["_ist"]=n["_pub"].dt.tz_convert(IST)
+    n["_date"]=n["_ist"].dt.date
+    today_date=now.date()
+    yesterday_date=(now-pd.Timedelta(days=1)).date()
+    dated_today=n[n["_date"]==today_date]
+    dated_yesterday=n[n["_date"]==yesterday_date]
+    excluded=n[~n.index.isin(pd.concat([dated_today,dated_yesterday]).index)]
+    a1,a2,a3=st.columns(3)
+    a1.metric(f"Today • {today_date.strftime('%d %b %Y')}",len(dated_today))
+    a2.metric(f"Yesterday • {yesterday_date.strftime('%d %b %Y')}",len(dated_yesterday))
+    a3.metric("Excluded from prediction",len(excluded))
+    with st.expander(f"🟢 TODAY — {today_date.strftime('%d %b %Y')} — {len(dated_today)} articles",expanded=True):
+        for _,row in dated_today.sort_values("_pub",ascending=False).iterrows():
+            st.markdown(f"{mood(row.get('sentiment'))} **{row.get('title','Untitled')}**")
+            st.caption(f"Source: {row.get('source','Unknown')} • Published: {row['_ist'].strftime('%I:%M %p IST')}")
+    with st.expander(f"🟡 YESTERDAY — {yesterday_date.strftime('%d %b %Y')} — {len(dated_yesterday)} articles"):
+        for _,row in dated_yesterday.sort_values("_pub",ascending=False).iterrows():
+            st.markdown(f"{mood(row.get('sentiment'))} **{row.get('title','Untitled')}**")
+            st.caption(f"Source: {row.get('source','Unknown')} • Published: {row['_ist'].strftime('%I:%M %p IST')}")
+    with st.expander(f"⚪ EXCLUDED FROM CURRENT PREDICTION — {len(excluded)} articles"):
+        st.caption("Older-than-yesterday and undated items are shown for audit only and must not influence today's prediction.")
+        for _,row in excluded.head(20).iterrows():
+            ts=row["_ist"].strftime("%d %b %Y, %I:%M %p IST") if pd.notna(row["_ist"]) else "No reliable publication time"
+            st.caption(f"{ts} • {row.get('source','Unknown')} • {row.get('title','Untitled')}")
+
 st.header("📰 Today & Yesterday News")
 if n.empty: st.info("No collected news yet.")
 else:
