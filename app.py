@@ -4,162 +4,170 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-DATA=Path("data")
-REPORT=DATA/"latest_report.json"
-NEWS=DATA/"latest_news.csv"
-AUDIT=DATA/"forecast_audit.csv"
-
-st.set_page_config(page_title="Reliance Power 360",page_icon="⚡",layout="wide")
+DATA = Path("data")
+st.set_page_config(page_title="Reliance Power 360", page_icon="⚡", layout="wide", initial_sidebar_state="collapsed")
 
 @st.cache_data(ttl=60)
 def load_json(path):
-    if not path.exists(): return {}
-    try: return json.loads(path.read_text(encoding="utf-8"))
-    except Exception: return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    except Exception:
+        return {}
 
 @st.cache_data(ttl=60)
 def load_csv(path):
     try:
-        if path.exists() and path.stat().st_size>0: return pd.read_csv(path)
-    except Exception: pass
-    return pd.DataFrame()
+        return pd.read_csv(path) if path.exists() and path.stat().st_size else pd.DataFrame()
+    except Exception:
+        return pd.DataFrame()
 
-report=load_json(REPORT)
-news=load_csv(NEWS)
-audit=load_csv(AUDIT)
+def mood(v):
+    s=str(v or "WAITING").upper()
+    return "🟢" if s=="BULLISH" else "🔴" if s=="BEARISH" else "⚪"
+
+def num(v, suffix=""):
+    return f"{v}{suffix}" if isinstance(v,(int,float)) else "—"
+
+report=load_json(DATA/"latest_report.json")
+news=load_csv(DATA/"latest_news.csv")
+price_history=load_csv(DATA/"price_history.csv")
+history=load_csv(DATA/"signal_history.csv")
+audit=load_csv(DATA/"forecast_audit.csv")
+
 summary=report.get("summary",{})
 price=report.get("price",{})
-relation=report.get("news_price_relation",{})
 today=report.get("today_explanation",{})
-fc=report.get("forecast",{})
-frames=report.get("timeframes",{})
+relation=report.get("news_price_relation",{})
+forecast=report.get("forecast",{})
+scan=report.get("generated_at","Waiting for live scan")
 
-st.title("⚡ Reliance Power 360° Intelligence")
-st.caption("Fresh news • official disclosures • price movement • explanation • forecasts • prediction audit")
-st.caption(f"Last scan: {report.get('generated_at','Waiting for first scan')} | Model: {report.get('model_version','Unknown')}")
+st.markdown("""
+<style>
+.block-container{max-width:1450px;padding-top:1.4rem;padding-bottom:2rem}
+div[data-testid="stMetric"]{border:1px solid rgba(128,128,128,.20);padding:16px;border-radius:14px;background:rgba(128,128,128,.035)}
+h1{margin-bottom:.1rem}
+.section-title{font-size:1.35rem;font-weight:700;margin-top:1rem;margin-bottom:.45rem}
+.small-note{opacity:.7;font-size:.85rem}
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- HEADER ----------
+left,right=st.columns([3,1])
+with left:
+    st.title("⚡ Reliance Power 360°")
+    st.caption("Live market intelligence • fresh news • price drivers • forward scenarios")
+with right:
+    st.markdown("**Latest analysis**")
+    st.caption(scan)
 
 if not report:
-    st.warning("Dashboard is ready. Waiting for the first successful intelligence scan.")
+    st.warning("Waiting for the first successful live scan.")
 
-# PRICE
-st.subheader("📈 Reliance Power Price Today")
-a,b,c,d=st.columns(4)
-a.metric("Last Price",f"₹{price.get('last_price','—')}")
-chg=price.get("daily_change_pct")
-b.metric("Today",f"{chg:+.2f}%" if isinstance(chg,(int,float)) else "—")
-chg5=price.get("five_day_change_pct")
-c.metric("5-Day Move",f"{chg5:+.2f}%" if isinstance(chg5,(int,float)) else "—")
-d.metric("Overall News Outlook",summary.get("news_outlook","WAITING"))
+# ---------- TOP DECISION PANEL ----------
+st.markdown('<div class="section-title">Market Snapshot</div>', unsafe_allow_html=True)
+c1,c2,c3,c4,c5=st.columns(5)
+c1.metric("Reliance Power", f"₹{price['last_price']:.2f}" if isinstance(price.get("last_price"),(int,float)) else "Waiting")
+d=price.get("daily_change_pct")
+c2.metric("Today", f"{d:+.2f}%" if isinstance(d,(int,float)) else "Waiting")
+w=price.get("five_day_change_pct")
+c3.metric("5-Day Move", f"{w:+.2f}%" if isinstance(w,(int,float)) else "Waiting")
+c4.metric("News Score", f"{summary.get('news_score','—')}/100")
+c5.metric("Current Bias", f"{mood(summary.get('news_outlook'))} {summary.get('news_outlook','WAITING')}")
 
-# WHY UP/DOWN
-st.subheader("🔍 Why Did Reliance Power Move Today?")
-st.write(today.get("explanation",relation.get("why_up_down","Waiting for fresh news and price data.")))
-drivers=today.get("today_drivers",[])
-if drivers:
-    for x in drivers[:8]:
-        icon="🟢" if x.get("direction")=="positive" else "🔴" if x.get("direction")=="negative" else "⚪"
-        st.write(f"{icon} **{x.get('title','')}** — {x.get('source','Unknown')} | Impact {x.get('impact','—')}")
-else:
-    st.info("No ranked fresh-news drivers yet.")
+# ---------- MAIN STORY ----------
+st.markdown('<div class="section-title">What is driving the stock now?</div>', unsafe_allow_html=True)
+main,side=st.columns([2,1])
+with main:
+    explanation=today.get("explanation") or relation.get("why_up_down") or "Live price/news relationship will appear after the next complete scan."
+    st.info(explanation)
+    drivers=today.get("today_drivers",[])
+    if drivers:
+        for x in drivers[:5]:
+            st.markdown(f"{'🟢' if x.get('direction')=='positive' else '🔴' if x.get('direction')=='negative' else '⚪'} **{x.get('title','Untitled')}**")
+            st.caption(f"{x.get('source','Unknown')} • Impact {x.get('impact','—')}")
+    else:
+        st.caption("No validated same-day drivers available yet.")
+with side:
+    st.markdown("**Evidence status**")
+    st.metric("Fresh articles", summary.get("article_count",len(news)))
+    st.metric("Bullish signals", summary.get("bullish_count",0))
+    st.metric("Bearish signals", summary.get("bearish_count",0))
 
-# FORECAST
-st.subheader("🔮 Forward Outlook")
-cols=st.columns(3)
-for col,key,title in zip(cols,["tomorrow","next_week","next_few_months"],["Tomorrow","Next Week","Next Few Months"]):
-    x=fc.get(key,{})
+# ---------- FORECAST ----------
+st.markdown('<div class="section-title">Forward Outlook</div>', unsafe_allow_html=True)
+st.caption("Scenario signals derived from fresh news, weighted source quality and current momentum. Not a price target.")
+a,b,c=st.columns(3)
+for col,key,label in [(a,"tomorrow","Tomorrow"),(b,"next_week","Next Week"),(c,"next_few_months","Next Few Months")]:
+    x=forecast.get(key,{})
     with col:
-        st.metric(title,x.get("outlook","WAITING"),f"{x.get('score','—')}/100" if x else None)
-st.caption(fc.get("reason","Forecast will appear after fresh news and price data are available."))
+        outlook=x.get("outlook","WAITING")
+        st.metric(label, f"{mood(outlook)} {outlook}", f"{x.get('score','—')}/100")
+st.caption(forecast.get("reason","Forecast will become available when price and fresh-news inputs are both available."))
 
-# EXISTING MULTI-TIMEFRAME
-st.subheader("📅 Intelligence Timeframes")
-cols=st.columns(3)
-for col,key,title in zip(cols,["few_days","few_weeks","few_months"],["Few Days","Few Weeks","Few Months"]):
-    x=frames.get(key,{})
-    with col:
-        st.metric(title,x.get("outlook","WAITING"),f"{x.get('score','—')}/100" if x else None)
+# ---------- CHARTS ----------
+st.markdown('<div class="section-title">Visual Intelligence</div>', unsafe_allow_html=True)
+ch1,ch2=st.columns(2)
 
-# NEWS
-st.subheader("📰 Fresh News Intelligence")
-m1,m2,m3,m4=st.columns(4)
-m1.metric("Articles",summary.get("article_count",len(news)))
-m2.metric("Bullish",summary.get("bullish_count",0))
-m3.metric("Bearish",summary.get("bearish_count",0))
-m4.metric("Neutral",summary.get("neutral_count",0))
+with ch1:
+    st.markdown("**Price trend**")
+    if not price_history.empty and {"date","close"}.issubset(price_history.columns):
+        ph=price_history.copy()
+        ph["date"]=pd.to_datetime(ph["date"],errors="coerce")
+        ph=ph.dropna(subset=["date"]).sort_values("date").set_index("date")
+        st.line_chart(ph[["close"]],height=320)
+    else:
+        st.caption("Price history is not available yet.")
 
-if news.empty:
-    st.info("No fresh news collected yet. Run the GitHub Action and refresh this page.")
-else:
-    for col,val in {"impact":1,"sentiment_score":0.0,"sentiment":"NEUTRAL","title":"Untitled"}.items():
-        if col not in news.columns: news[col]=val
-    news=news.sort_values(["impact","sentiment_score"],ascending=[False,False])\n    if "published" in news.columns:\n        st.caption("Showing only the most recent collected items. Older items should be excluded by the collector.")
-    for _,r in news.head(20).iterrows():
-        s=str(r.get("sentiment","NEUTRAL"))
-        icon="🟢" if s=="BULLISH" else "🔴" if s=="BEARISH" else "⚪"
-        with st.expander(f"{icon} {str(r.get('title','Untitled'))[:160]}"):
-            st.write(str(r.get("summary","")))
-            st.caption(f"Source: {r.get('source','Unknown')} | Impact: {r.get('impact','—')}")
-            link=str(r.get("link",""))
-            if link.startswith("http"): st.link_button("Open source",link)
+with ch2:
+    st.markdown("**News balance**")
+    if not news.empty and "sentiment" in news.columns:
+        order=["BULLISH","BEARISH","NEUTRAL"]
+        counts=news["sentiment"].fillna("NEUTRAL").value_counts().reindex(order,fill_value=0)
+        st.bar_chart(counts,height=320)
+    else:
+        st.caption("Fresh-news sentiment will appear after a scan.")
 
-# AUDIT
-st.subheader("🎯 Previous Forecast vs What Happened")
-if audit.empty:
-    st.info("Forecast accuracy will build automatically after multiple scans and later price outcomes.")
-else:
-    st.dataframe(audit.sort_values("analysis_date",ascending=False),use_container_width=True,hide_index=True)
-    if "matched" in audit.columns:
-        accuracy=float(audit["matched"].mean()*100)
-        st.metric("Current Recorded Match Rate",f"{accuracy:.1f}%")
-
-# CHARTS
-st.subheader("📊 Visual Intelligence")
-
-if not news.empty:
-    left, right = st.columns(2)
-    with left:
-        st.markdown("#### Sentiment Distribution")
-        if "sentiment" in news.columns:
-            counts = news["sentiment"].fillna("NEUTRAL").value_counts()
-            st.bar_chart(counts)
-    with right:
-        st.markdown("#### News Source Distribution")
-        if "source_type" in news.columns:
-            st.bar_chart(news["source_type"].fillna("Unknown").value_counts())
-
-# Price history line chart
-price_history = load_csv(DATA / "price_history.csv")
-if not price_history.empty and {"date", "close"}.issubset(price_history.columns):
-    st.markdown("#### 📈 Price Trend")
-    ph = price_history.copy()
-    ph["date"] = pd.to_datetime(ph["date"], errors="coerce")
-    ph = ph.dropna(subset=["date"]).sort_values("date").set_index("date")
-    st.line_chart(ph[["close"]], height=280)
-
-# Historical intelligence score
-history = load_csv(DATA / "signal_history.csv")
 if not history.empty and "score" in history.columns:
-    st.markdown("#### 🧠 Intelligence Score History")
-    h = history.copy()
+    st.markdown("**Intelligence score over time**")
+    h=history.copy()
     if "generated_at" in h.columns:
-        h["generated_at"] = pd.to_datetime(h["generated_at"], errors="coerce")
-        h = h.dropna(subset=["generated_at"]).sort_values("generated_at").set_index("generated_at")
-    h2=h[["score"]].copy()\n    st.line_chart(h2, height=280)
+        h["generated_at"]=pd.to_datetime(h["generated_at"],errors="coerce")
+        h=h.dropna(subset=["generated_at"]).sort_values("generated_at").set_index("generated_at")
+    st.line_chart(h[["score"]],height=260)
 
-# Pie chart using native Altair
-if not news.empty and "sentiment" in news.columns:
-    try:
-        import altair as alt
-        pie_data = news["sentiment"].fillna("NEUTRAL").value_counts().rename_axis("sentiment").reset_index(name="count")
-        st.markdown("#### 🥧 Bullish vs Bearish vs Neutral")
-        pie = alt.Chart(pie_data).mark_arc(innerRadius=45).encode(
-            theta=alt.Theta("count:Q"),
-            color=alt.Color("sentiment:N"),
-            tooltip=["sentiment:N", "count:Q"],
-        )
-        st.altair_chart(pie.properties(height=300), use_container_width=True)
-    except Exception:
-        pass
+# ---------- NEWS ----------
+st.markdown('<div class="section-title">Fresh News Feed</div>', unsafe_allow_html=True)
+st.caption("Only relevant collected items should influence the score. Read the source before acting.")
+if news.empty:
+    st.info("No fresh news is available yet.")
+else:
+    for col,default in {"impact":1,"sentiment":"NEUTRAL","title":"Untitled","published":""}.items():
+        if col not in news.columns: news[col]=default
+    if "published" in news.columns:
+        news["_published"]=pd.to_datetime(news["published"],utc=True,errors="coerce")
+        news=news.sort_values(["_published","impact"],ascending=[False,False],na_position="last")
+    else:
+        news=news.sort_values("impact",ascending=False)
+    filter_choice=st.radio("Show",["All","Bullish","Bearish","Neutral"],horizontal=True)
+    shown=news if filter_choice=="All" else news[news["sentiment"]==filter_choice.upper()]
+    for _,r in shown.head(30).iterrows():
+        s=str(r.get("sentiment","NEUTRAL")).upper()
+        icon=mood(s)
+        date=str(r.get("published",""))
+        with st.expander(f"{icon} {r.get('title','Untitled')}"):
+            if str(r.get("summary","")).strip(): st.write(str(r.get("summary","")))
+            st.caption(f"{r.get('source','Unknown')} • {date}")
+            link=str(r.get("link",""))
+            if link.startswith("http"): st.link_button("Read original source",link)
+
+# ---------- AUDIT ----------
+st.markdown('<div class="section-title">Forecast Track Record</div>', unsafe_allow_html=True)
+if audit.empty:
+    st.caption("The track record will build as earlier forecasts receive enough later price data for evaluation.")
+else:
+    if "matched" in audit.columns:
+        st.metric("Recorded directional match rate",f"{audit['matched'].astype(bool).mean()*100:.1f}%")
+    st.dataframe(audit.sort_values("analysis_date",ascending=False),use_container_width=True,hide_index=True)
 
 st.divider()
-st.caption("Research tool only. News can be correlated with a price move without proving it caused the move. Forecasts are probabilistic, not guaranteed.")
+st.caption("Research and intelligence tool only. A news item may correlate with a price move without proving causation. Forecasts are probabilistic and are not financial advice.")
