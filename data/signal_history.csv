@@ -1,3 +1,4 @@
-generated_at,score,outlook,few_days,few_weeks,few_months,articles,price,daily_price_change_pct
-2026-09-01T22:33:59.888251+00:00,58.06,NEUTRAL,58.06,55.8,53.63,309,,
-2026-09-01T22:46:43.276438+00:00,60.2,BULLISH,60.2,57.34,54.59,374,,
+generated_at,score,outlook,few_days,few_weeks,few_months,articles,price,daily_price_change_pct,prediction,prediction_score
+2026-09-01T22:33:59.888251+00:00,58.06,NEUTRAL,58.06,55.8,53.63,309,,,,
+2026-09-01T22:46:43.276438+00:00,60.2,BULLISH,60.2,57.34,54.59,374,,,,
+2026-09-01T23:44:45.331108+00:00,60.59,BULLISH,,,,19,1277.0,-0.78,BULLISH,66.8
