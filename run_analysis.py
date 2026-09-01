@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from news_collector import collect_all_news
+from news_collector import collect_all_news\nfrom official_rpower import collect_official_rpower
 from sentiment_engine import analyse_news
 from scoring import calculate_news_score, build_timeframe_outlook
 
@@ -13,7 +13,7 @@ DATA_DIR.mkdir(exist_ok=True)
 
 
 def main():
-    raw = collect_all_news()
+    news = collect_all_news()\n    try:\n        official = collect_official_rpower()\n    except Exception as exc:\n        print(f"Official Reliance Power collector failed: {exc}")\n        official = news.iloc[0:0].copy()\n\n    raw = __import__("pandas").concat([news, official], ignore_index=True, sort=False)
     analysed = analyse_news(raw)
 
     if not analysed.empty:
