@@ -44,10 +44,10 @@ price=report.get("price",{})
 today=report.get("today_explanation",{})
 relation=report.get("news_price_relation",{})
 forecast=report.get("forecast",{})
+scan=report.get("generated_at","Waiting for live scan")
 now_ist=datetime.now(IST)
 scan_ist=pd.to_datetime(scan,utc=True,errors="coerce")
 scan_label=scan_ist.tz_convert(IST).strftime("%d %b %Y, %I:%M:%S %p IST") if not pd.isna(scan_ist) else str(scan)
-scan=report.get("generated_at","Waiting for live scan")
 
 st.markdown("""
 <style>
