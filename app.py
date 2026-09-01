@@ -87,7 +87,7 @@ for item in drivers.get("today_drivers",[])[:8]:
     st.caption(f"Source: {item.get('source','Unknown')} • Published: {ts} • Impact: {item.get('impact','—')}")
 
 st.header("📊 Price & News")
-l,rcol=st.columns(1)
+l=st.container()
 with l:
     if not ph.empty and {"date","close"}.issubset(ph.columns):
         q=ph.copy();q["date"]=pd.to_datetime(q["date"],errors="coerce");q=q.dropna().sort_values("date").set_index("date")
