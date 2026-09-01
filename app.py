@@ -92,7 +92,7 @@ if news.empty:
 else:
     for col,val in {"impact":1,"sentiment_score":0.0,"sentiment":"NEUTRAL","title":"Untitled"}.items():
         if col not in news.columns: news[col]=val
-    news=news.sort_values(["impact","sentiment_score"],ascending=[False,False])
+    news=news.sort_values(["impact","sentiment_score"],ascending=[False,False])\n    if "published" in news.columns:\n        st.caption("Showing only the most recent collected items. Older items should be excluded by the collector.")
     for _,r in news.head(20).iterrows():
         s=str(r.get("sentiment","NEUTRAL"))
         icon="🟢" if s=="BULLISH" else "🔴" if s=="BEARISH" else "⚪"
@@ -134,7 +134,7 @@ if not price_history.empty and {"date", "close"}.issubset(price_history.columns)
     ph = price_history.copy()
     ph["date"] = pd.to_datetime(ph["date"], errors="coerce")
     ph = ph.dropna(subset=["date"]).sort_values("date").set_index("date")
-    st.line_chart(ph["close"])
+    st.line_chart(ph[["close"]], height=280)
 
 # Historical intelligence score
 history = load_csv(DATA / "signal_history.csv")
@@ -144,7 +144,7 @@ if not history.empty and "score" in history.columns:
     if "generated_at" in h.columns:
         h["generated_at"] = pd.to_datetime(h["generated_at"], errors="coerce")
         h = h.dropna(subset=["generated_at"]).sort_values("generated_at").set_index("generated_at")
-    st.line_chart(h["score"])
+    h2=h[["score"]].copy()\n    st.line_chart(h2, height=280)
 
 # Pie chart using native Altair
 if not news.empty and "sentiment" in news.columns:
@@ -152,12 +152,12 @@ if not news.empty and "sentiment" in news.columns:
         import altair as alt
         pie_data = news["sentiment"].fillna("NEUTRAL").value_counts().rename_axis("sentiment").reset_index(name="count")
         st.markdown("#### 🥧 Bullish vs Bearish vs Neutral")
-        pie = alt.Chart(pie_data).mark_arc().encode(
+        pie = alt.Chart(pie_data).mark_arc(innerRadius=45).encode(
             theta=alt.Theta("count:Q"),
             color=alt.Color("sentiment:N"),
             tooltip=["sentiment:N", "count:Q"],
         )
-        st.altair_chart(pie, use_container_width=True)
+        st.altair_chart(pie.properties(height=300), use_container_width=True)
     except Exception:
         pass
 
