@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import pandas as pd
 from datetime import datetime, timezone
 from pathlib import Path
 from collectors import collect_all
@@ -7,6 +8,8 @@ from intelligence import analyse, deduplicate, outlook, timeframes
 from market_context import fetch_market_context
 from price_tracker import fetch_reliance_power_price
 from news_price_analysis import explain_price_news_relation
+from forecast_engine import build_explanations, forecast, pending_outcomes
+from forecast_audit import update_audit
 from data_store import append_history
 
 DATA=Path("data"); DATA.mkdir(exist_ok=True)
@@ -26,6 +29,8 @@ def main():
     market=fetch_market_context()
     price=fetch_reliance_power_price()
     relation=explain_price_news_relation(analysed,price)
+    explanations=build_explanations(analysed,price)
+    forecasts=forecast(analysed,price,base)
 
     summary={
         "news_score":base["score"],"news_outlook":base["outlook"],"confidence":base["confidence"],
@@ -44,11 +49,16 @@ def main():
       "market_context":market,
       "price":price,
       "news_price_relation":relation,
+      "today_explanation":explanations,
+      "forecast":forecasts,
       "source_breakdown":analysed.groupby("source_type").size().to_dict() if not analysed.empty else {},
       "top_bullish_news":analysed[analysed["sentiment"]=="BULLISH"].head(10).to_dict("records") if not analysed.empty else [],
       "top_bearish_news":analysed[analysed["sentiment"]=="BEARISH"].head(10).to_dict("records") if not analysed.empty else [],
     }
     (DATA/"latest_report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf-8")
+    history_path=DATA/"signal_history.csv"
+    prior_history=pd.read_csv(history_path) if history_path.exists() else pd.DataFrame()
+    update_audit(pending_outcomes(prior_history,price.get("last_price")))
     append_history({
         "generated_at":report["generated_at"],"score":base["score"],"outlook":base["outlook"],
         "few_days":frames["few_days"]["score"],"few_weeks":frames["few_weeks"]["score"],
