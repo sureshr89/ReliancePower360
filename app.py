@@ -32,23 +32,29 @@ now=datetime.now(IST); scan=pd.to_datetime(r.get("generated_at"),utc=True,errors
 scan_txt=scan.tz_convert(IST).strftime("%d %b %Y, %I:%M:%S %p IST") if not pd.isna(scan) else "Waiting"
 
 st.title("⚡ Reliance Power 360°")
-st.caption("Today + yesterday news intelligence • current-session prediction • EOD verification")
+st.caption("Date-based news intelligence • current-session prediction • EOD verification")
 st.caption(f"Analysis: {scan_txt} • Auto-refresh: 5 minutes")
 
 a,b,c,d,e=st.columns(5)
 a.metric("Price",f"₹{p.get('last_price','—')}")
 chg=p.get("daily_change_pct"); b.metric("Today",f"{chg:+.2f}%" if isinstance(chg,(int,float)) else "—")
 c.metric("News Score",f"{s.get('news_score','—')}/100")
-d.metric("Today News Used",window.get("today_articles",0))
-e.metric("Yesterday News Used",window.get("yesterday_articles",0))
+today_label=now.strftime("%d %b")
+yesterday_label=(now-pd.Timedelta(days=1)).strftime("%d %b")
+d.metric(f"{today_label} News Used",window.get("today_articles",0))
+e.metric(f"{yesterday_label} News Used",window.get("yesterday_articles",0))
 
-st.header("🔮 Today's Prediction")
-st.caption("Only TODAY and YESTERDAY news are primary inputs. Weekly and monthly predictions are currently disabled.")
+st.header(f"🔮 Prediction for {now.strftime('%d %b %Y')}")
+st.caption(f"Primary news dates: {now.strftime('%d %b %Y')} and {(now-pd.Timedelta(days=1)).strftime('%d %b %Y')}. Weekly and monthly predictions are currently disabled.")
 pred=f.get("current_session",{})
 x,y=st.columns([1,2])
 x.metric("Current / Remaining Session",f"{mood(pred.get('outlook'))} {pred.get('outlook','WAITING')}",f"{pred.get('score','—')}/100")
 y.info(f.get("reason","Waiting for enough news and price data."))
-st.caption(f"Evidence window: Today {window.get('today_articles',0)} • Yesterday {window.get('yesterday_articles',0)} • Total {window.get('used_total',0)}")
+st.caption(
+    f"Evidence window: {now.strftime('%d %b %Y')} = {window.get('today_articles',0)} articles • "
+    f"{(now-pd.Timedelta(days=1)).strftime('%d %b %Y')} = {window.get('yesterday_articles',0)} articles • "
+    f"Total = {window.get('used_total',0)}"
+)
 
 st.header("🔍 Why is the stock moving?")
 st.write(drivers.get("explanation","Waiting for validated today/yesterday evidence."))
@@ -70,7 +76,7 @@ with rcol:
         st.bar_chart(n["sentiment"].fillna("NEUTRAL").value_counts(),height=280)
 
 st.header("📅 News Analysis — Date Wise")
-st.caption("Prediction evidence is separated by publication date. Only TODAY and YESTERDAY should influence the current-session prediction.")
+st.caption("Prediction evidence is separated by exact publication date. Only the two dates shown below should influence this prediction.")
 if not n.empty:
     if "published" in n.columns:
         n["_pub"]=pd.to_datetime(n["published"],utc=True,errors="coerce")
@@ -101,7 +107,7 @@ if not n.empty:
             ts=row["_ist"].strftime("%d %b %Y, %I:%M %p IST") if pd.notna(row["_ist"]) else "No reliable publication time"
             st.caption(f"{ts} • {row.get('source','Unknown')} • {row.get('title','Untitled')}")
 
-st.header("📰 Today & Yesterday News")
+st.header("📰 News Feed — Publication Date Shown")
 if n.empty: st.info("No collected news yet.")
 else:
     if "published" in n.columns:
