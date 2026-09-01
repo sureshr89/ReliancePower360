@@ -1,51 +1,37 @@
 from __future__ import annotations
-
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from collectors import collect_all
+from intelligence import analyse, deduplicate, outlook, timeframes
 
-from news_collector import collect_all_news\nfrom official_rpower import collect_official_rpower
-from sentiment_engine import analyse_news
-from scoring import calculate_news_score, build_timeframe_outlook
-
-DATA_DIR = Path("data")
-DATA_DIR.mkdir(exist_ok=True)
-
+DATA=Path("data"); DATA.mkdir(exist_ok=True)
 
 def main():
-    news = collect_all_news()\n    try:\n        official = collect_official_rpower()\n    except Exception as exc:\n        print(f"Official Reliance Power collector failed: {exc}")\n        official = news.iloc[0:0].copy()\n\n    raw = __import__("pandas").concat([news, official], ignore_index=True, sort=False)
-    analysed = analyse_news(raw)
-
+    raw=collect_all()
+    analysed=analyse(raw)
+    analysed=deduplicate(analysed)
     if not analysed.empty:
-        analysed = analysed.sort_values(
-            ["impact", "sentiment_score"],
-            ascending=[False, False]
-        )
-
-    analysed.to_csv(DATA_DIR / "latest_news.csv", index=False)
-
-    summary = calculate_news_score(analysed)
-    timeframes = build_timeframe_outlook(summary["news_score"])
-
-    report = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "company": "Reliance Power",
-        "model_version": "0.1-news-only",
-        "summary": summary,
-        "timeframes": timeframes,
-        "top_bullish_news": analysed[analysed["sentiment"] == "BULLISH"]
-            .head(5)[["title", "source", "impact", "sentiment_score", "link"]]
-            .to_dict("records") if not analysed.empty else [],
-        "top_bearish_news": analysed[analysed["sentiment"] == "BEARISH"]
-            .head(5)[["title", "source", "impact", "sentiment_score", "link"]]
-            .to_dict("records") if not analysed.empty else [],
+        analysed=analysed.sort_values(["impact","source_reliability","relevance"],ascending=False)
+    analysed.to_csv(DATA/"latest_news.csv",index=False)
+    base=outlook(analysed)
+    report={
+      "generated_at":datetime.now(timezone.utc).isoformat(),
+      "company":"Reliance Power",
+      "model_version":"1.0-multisource-360",
+      "summary":{
+        "news_score":base["score"],"news_outlook":base["outlook"],"confidence":base["confidence"],
+        "article_count":int(len(analysed)),
+        "bullish_count":int((analysed.get("sentiment")=="BULLISH").sum()) if not analysed.empty else 0,
+        "bearish_count":int((analysed.get("sentiment")=="BEARISH").sum()) if not analysed.empty else 0,
+        "neutral_count":int((analysed.get("sentiment")=="NEUTRAL").sum()) if not analysed.empty else 0,
+      },
+      "timeframes":timeframes(base),
+      "source_breakdown":analysed.groupby("source_type").size().to_dict() if not analysed.empty else {},
+      "top_bullish_news":analysed[analysed["sentiment"]=="BULLISH"].head(10).to_dict("records") if not analysed.empty else [],
+      "top_bearish_news":analysed[analysed["sentiment"]=="BEARISH"].head(10).to_dict("records") if not analysed.empty else [],
     }
+    (DATA/"latest_report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf-8")
+    print(json.dumps(report,indent=2,ensure_ascii=False))
 
-    with open(DATA_DIR / "latest_report.json", "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=2, ensure_ascii=False)
-
-    print(json.dumps(report, indent=2, ensure_ascii=False))
-
-
-if __name__ == "__main__":
-    main()
+if __name__=="__main__": main()
