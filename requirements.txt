@@ -6,3 +6,5 @@ beautifulsoup4>=4.12,<5.0
 lxml>=5.3,<7.0
 vaderSentiment==3.3.2
 python-dateutil>=2.9,<3.0
+
+streamlit-autorefresh>=1.0,<2.0
