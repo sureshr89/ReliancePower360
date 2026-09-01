@@ -5,11 +5,15 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import pandas as pd
 import streamlit as st
-from streamlit_autorefresh import st_autorefresh
+try:
+    from streamlit_autorefresh import st_autorefresh
+except Exception:
+    st_autorefresh = None
 
 DATA=Path("data"); IST=ZoneInfo("Asia/Kolkata")
 st.set_page_config(page_title="Reliance Power 360",page_icon="⚡",layout="wide")
-st_autorefresh(interval=300000,limit=None,key="five_min_refresh")
+if st_autorefresh is not None:
+    st_autorefresh(interval=300000,limit=None,key="five_min_refresh")
 
 @st.cache_data(ttl=300)
 def csv(p):
@@ -68,7 +72,10 @@ with rcol:
 st.header("📅 News Analysis — Date Wise")
 st.caption("Prediction evidence is separated by publication date. Only TODAY and YESTERDAY should influence the current-session prediction.")
 if not n.empty:
-    n["_pub"]=pd.to_datetime(n.get("published"),utc=True,errors="coerce")
+    if "published" in n.columns:
+        n["_pub"]=pd.to_datetime(n["published"],utc=True,errors="coerce")
+    else:
+        n["_pub"]=pd.NaT
     n["_ist"]=n["_pub"].dt.tz_convert(IST)
     n["_date"]=n["_ist"].dt.date
     today_date=now.date()
@@ -97,7 +104,10 @@ if not n.empty:
 st.header("📰 Today & Yesterday News")
 if n.empty: st.info("No collected news yet.")
 else:
-    n["_pub"]=pd.to_datetime(n.get("published"),utc=True,errors="coerce")
+    if "published" in n.columns:
+        n["_pub"]=pd.to_datetime(n["published"],utc=True,errors="coerce")
+    else:
+        n["_pub"]=pd.NaT
     n=n.sort_values("_pub",ascending=False)
     for _,row in n.head(40).iterrows():
         pub=row["_pub"]; ts=pub.tz_convert(IST).strftime("%d %b %Y, %I:%M %p IST") if not pd.isna(pub) else "Time unavailable"
