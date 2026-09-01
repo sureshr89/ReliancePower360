@@ -56,5 +56,7 @@ jobs:
           [ -f data/signal_history.csv ] && git add data/signal_history.csv || true
           [ -f data/price_history.csv ] && git add data/price_history.csv || true
           [ -f data/forecast_audit.csv ] && git add data/forecast_audit.csv || true
+          [ -f data/session_predictions.csv ] && git add data/session_predictions.csv || true
+          [ -f data/eod_audit.csv ] && git add data/eod_audit.csv || true
           git diff --cached --quiet || git commit -m "Update Reliance Power 360 intelligence"
           git push
