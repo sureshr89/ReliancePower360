@@ -1,0 +1,23 @@
+name: NIFTY 500 Daily Scanner
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * 1-5"
+    - cron: "10 10 * * 1-5"
+permissions: {contents: write}
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install -r requirements.txt
+      - run: |
+          if [ "${{ github.event.schedule }}" = "10 10 * * 1-5" ]; then python nifty500_eod.py; else python nifty500_scanner.py; fi
+      - run: |
+          git config user.name "ReliancePower360 Bot"
+          git config user.email "actions@github.com"
+          git add data/nifty500_scan.csv data/nifty500_report.json data/nifty500_eod_audit.csv || true
+          git diff --cached --quiet || git commit -m "Update NIFTY 500 daily intelligence"
+          git push
