@@ -35,10 +35,15 @@ def collect_rss():
             for e in feed.entries[:100]:
                 title=getattr(e,"title","").strip(); published=getattr(e,"published","") or getattr(e,"updated","")
                 text=f"{title} {getattr(e,'summary','')}".lower()
-                # Sector feed is context only; require a Reliance Power term for company analysis.
+                # Strict RPOWER relevance: generic sector news is collected only as context,
+                # never as direct company prediction evidence.
                 if not title or not _fresh(published): continue
-                if name!="Google News - Sector" and not any(t in text for t in RELEVANCE_TERMS): continue
-                rows.append(_row(title,getattr(e,"summary",""),getattr(e,"link",""),name,"RSS",published))
+                direct=any(t in text for t in RELEVANCE_TERMS)
+                if not direct: continue
+                row=_row(title,getattr(e,"summary",""),getattr(e,"link",""),name,"RSS",published)
+                row["relevance_class"]="DIRECT_RPOWER"
+                row["prediction_eligible"]=True
+                rows.append(row)
         except Exception as exc: print("RSS ERROR",name,exc)
     return rows
 
@@ -82,7 +87,15 @@ def collect_all():
         except Exception as exc: print("OPTIONAL COLLECTOR ERROR",mod,exc)
     df=pd.DataFrame(rows)
     if df.empty:return df
-    # Final freshness and company relevance guard.
-    df=df[df["published"].apply(lambda x: (not str(x).strip()) or _fresh(x))]
-    df=df.drop_duplicates(subset=["id"]).reset_index(drop=True)
-    return df
+    # Final freshness, timestamp and relevance guard.
+    df=df[df["published"].apply(lambda x: bool(str(x).strip()) and _fresh(x))].copy()
+    if df.empty:return df
+    text=(df["title"].fillna("")+" "+df["summary"].fillna("")).str.lower()
+    direct=text.apply(lambda s:any(t in s for t in RELEVANCE_TERMS))
+    df["prediction_eligible"]=direct
+    df["relevance_class"]=direct.map({True:"DIRECT_RPOWER",False:"CONTEXT_ONLY"})
+    # Near-duplicate removal by normalized title.
+    norm=df["title"].str.lower().str.replace(r"[^a-z0-9]+"," ",regex=True).str.strip()
+    df["_norm_title"]=norm
+    df=df.sort_values(["source_reliability","published"],ascending=[False,False]).drop_duplicates(subset=["_norm_title"]).drop(columns=["_norm_title"])
+    return df.reset_index(drop=True)
