@@ -1,45 +1,29 @@
-# Reliance Power 360
+# ReliancePower360
 
-Free Reliance Power news intelligence and outlook engine.
+Multi-source public-information intelligence dashboard for Reliance Power.
 
-## Phase 1
-- Collect broad Reliance Power news through RSS
-- Remove duplicate articles
-- Score article sentiment
-- Estimate article impact
-- Produce bullish / bearish / neutral outlook
-- Generate outlook for few days, few weeks and few months
-- Save the latest report as JSON and CSV
+## Included
+- Reliance Power official website collection
+- Press releases, regulatory filings and public notices
+- Multiple Google News RSS searches
+- GDELT global news API
+- Sector news context
+- Source reliability weighting
+- Relevance filtering
+- Cross-source duplicate reduction
+- Sentiment and impact scoring
+- Few-days / few-weeks / few-months outlook
+- Historical signal logging
+- Optional free public market context
+- GitHub Actions scheduled runs
+- Streamlit dashboard
 
-## Current architecture
+## Important
+This project analyses publicly available information. It does not guarantee future price movement and is not financial advice. Exchange-specific collectors are intentionally not faked: if a stable public endpoint is added, it should be verified against the actual exchange response before being treated as an official filing.
 
-```
-RSS / News Sources
-        ↓
-News Collector
-        ↓
-Duplicate Removal
-        ↓
-Sentiment + Impact Engine
-        ↓
-360 Score
-        ↓
-Few Days / Weeks / Months Outlook
-        ↓
-data/latest_report.json
-```
-
-## Run locally
-
+## Run
 ```bash
 pip install -r requirements.txt
 python run_analysis.py
+streamlit run app.py
 ```
-
-## Important
-
-The current version is a news-intelligence model, not a trading system and not financial advice. Technical price data, exchange announcements, fundamentals, sector indicators and historical prediction accuracy will be added in later phases.
-
-## Next phase
-
-Build the Streamlit dashboard after the analysis engine is producing stable reports.
