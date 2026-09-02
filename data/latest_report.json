@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-01T23:44:45.331108+00:00",
+  "generated_at": "2026-09-02T00:43:31.279371+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
@@ -13,19 +13,19 @@
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1277.0,
-    "daily_change_pct": -0.78,
-    "five_day_change_pct": -2.5,
-    "as_of": "2026-08-31",
-    "history_rows": 66
+    "last_price": 1309.0,
+    "daily_change_pct": 2.51,
+    "five_day_change_pct": -0.61,
+    "as_of": "2026-09-01",
+    "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": -0.78,
-    "five_day_price_change_pct": -2.5,
-    "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
-    "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
+    "daily_price_change_pct": 2.51,
+    "five_day_price_change_pct": -0.61,
+    "relation": "News and price are moving in the same positive direction.",
+    "why_up_down": "News and price are moving in the same positive direction."
   },
   "today_explanation": {
     "today_drivers": [
@@ -43,11 +43,11 @@
       "yesterday": 1,
       "used_total": 1
     },
-    "explanation": "Reliance Power fell -0.78% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power rose +2.51% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 66.8,
+      "score": 70.1,
       "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
