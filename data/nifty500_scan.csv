@@ -1,1 +1,10 @@
-priority,ticker,set,1Y,6M,1M,1W,1D,prediction,confidence,last_close,prediction_date,prediction_time
+ticker,1Y,6M,1M,1W,1D,set,momentum_score,prediction,confidence,last_close,priority,prediction_date,prediction_time
+HDFCBANK,-26.07,-19.09,-5.28,-3.36,-1.28,-----,-5,BEARISH,95,702.8,1,2026-09-02,13:31:41 IST
+BHARTIARTL,-1.67,-1.95,-5.14,-1.75,-0.45,-----,-5,BEARISH,95,1868.8,2,2026-09-02,13:31:41 IST
+TCS,-24.64,-9.36,-4.65,3.33,-0.98,---+-,-3,BEARISH,77,2345.7,3,2026-09-02,13:31:41 IST
+INFY,-24.38,-13.27,-2.88,1.24,-1.91,---+-,-3,BEARISH,77,1133.9,4,2026-09-02,13:31:41 IST
+SBIN,26.52,-13.17,-2.2,-3.06,-1.42,+----,-3,BEARISH,77,1019.8,5,2026-09-02,13:31:41 IST
+ITC,-33.95,-14.07,-7.25,-0.81,0.54,----+,-3,BEARISH,77,268.05,6,2026-09-02,13:31:41 IST
+RELIANCE,-3.23,-2.59,1.5,0.94,0.09,--+++,1,NEUTRAL,59,1310.2,7,2026-09-02,13:31:41 IST
+ICICIBANK,1.77,3.53,-2.57,-0.01,-2.17,++---,-1,NEUTRAL,59,1422.5,8,2026-09-02,13:31:41 IST
+LT,10.61,2.51,-0.25,-1.43,0.0,++--0,0,NEUTRAL,50,3980.2,9,2026-09-02,13:31:41 IST
