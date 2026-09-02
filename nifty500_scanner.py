@@ -13,6 +13,7 @@ PRICE_URL="https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
 DEFAULT="RELIANCE.NS,RPOWER.NS,TCS.NS,INFY.NS,SBIN.NS,ITC.NS,HDFCBANK.NS,ICICIBANK.NS,LT.NS,BHARTIARTL.NS"
 RSS=["https://news.google.com/rss/search?q={q}&hl=en-IN&gl=IN&ceid=IN:en"]
 ALIASES={"RELIANCEPOWER.NS":"RPOWER.NS","RELIANCEPOWER":"RPOWER.NS"}
+COMPANY={"RPOWER":"Reliance Power","RELIANCE":"Reliance Industries","TCS":"Tata Consultancy Services","INFY":"Infosys","SBIN":"State Bank of India","ITC":"ITC Limited","HDFCBANK":"HDFC Bank","ICICIBANK":"ICICI Bank","LT":"Larsen & Toubro","BHARTIARTL":"Bharti Airtel"}
 
 def hist(t):
  r=requests.get(PRICE_URL.format(ticker=t),params={"range":"2y","interval":"1d"},headers={"User-Agent":"Mozilla/5.0"},timeout=30);r.raise_for_status()
@@ -46,15 +47,13 @@ def sentiment(title):
  return "BULLISH" if p>n else "BEARISH" if n>p else "NEUTRAL"
 
 def news_for(symbol, now):
- name={"RPOWER":"Reliance Power","RELIANCE":"Reliance Industries"}.get(symbol,symbol)
- queries=[f'"{name}"',f'"{name}" stock',f'"{name}" shares']
+ name=COMPANY.get(symbol,symbol)
+ queries=[f'"{name}"',f'"{name}" stock',f'"{name}" shares',f'"{name}" NSE']
  items=[]
  for query in queries:
   q=requests.utils.quote(query)
   for tpl in RSS:
    feed=feedparser.parse(tpl.format(q=q))
-   if getattr(feed, "bozo", False):
-    continue
    for e in feed.entries:
     dt=published(e)
     if not dt:
@@ -62,6 +61,8 @@ def news_for(symbol, now):
     if dt.date() not in {now.date(),(now-timedelta(days=1)).date()} or dt>now:
      continue
     title=re.sub(r"\s+"," ",e.get("title","")).strip()
+    # Google News titles sometimes append the publisher after a dash.
+    # Keep the exact article heading as supplied, but reject obvious unrelated matches.
     link=e.get("link","")
     key=(title.lower(),dt.date())
     if title and key not in {(x["title"].lower(),x["published_date"]) for x in items}:
