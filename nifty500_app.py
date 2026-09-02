@@ -17,6 +17,12 @@ def name(v):
 r,s,a,n=js("nifty500_report.json"),csv("nifty500_scan.csv"),csv("nifty500_eod_audit.csv"),csv("nifty500_prediction_news.csv")
 st.title("📊 NIFTY 500 Daily Intelligence")
 st.caption(f"Prediction date: {r.get('prediction_date','Waiting')} • Prediction time: {r.get('prediction_time','—')} • EOD check: 5:00 PM IST")
+st.caption("Live dashboard refresh: every 1 minute • Prediction news: previous day + prediction-day news published before prediction time")
+try:
+    from streamlit_autorefresh import st_autorefresh
+    st_autorefresh(interval=60*1000, key="live_refresh")
+except Exception:
+    pass
 
 # TABLE 1
 st.header("🔮 Table 1 — Prediction: What do we expect and why?")
@@ -48,6 +54,17 @@ else:
             "Why? — Momentum":f"1Y {x.get('1Y','—')}% | 6M {x.get('6M','—')}% | 1M {x.get('1M','—')}% | 1W {x.get('1W','—')}% | 1D {x.get('1D','—')}%",
         })
     st.dataframe(pd.DataFrame(rows),use_container_width=True,hide_index=True)
+
+    st.subheader("📰 Exact Article Headings Used for the Predictions")
+    if n.empty:
+        st.info("No dated article headings were saved in this prediction snapshot.")
+    else:
+        articles=n.copy()
+        articles["Stock"]=articles["ticker"].map(name)
+        articles["News Direction"]=articles["sentiment"].map({"BULLISH":"🟢 BULLISH","BEARISH":"🔴 BEARISH","NEUTRAL":"⚪ NEUTRAL"}).fillna("⚪ NEUTRAL")
+        article_cols=[z for z in ["Stock","News Direction","weight","published_date","published_at","source","title","link"] if z in articles]
+        st.dataframe(articles[article_cols],use_container_width=True,hide_index=True)
+        st.caption("These are the exact saved article headings. Only articles within the allowed prediction evidence window should be included.")
 
 # TABLE 2
 st.header("🎯 Table 2 — 5 PM EOD Result: Did the prediction follow?")
