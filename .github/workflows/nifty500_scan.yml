@@ -1,15 +1,25 @@
-name: NIFTY 500 Daily Scanner
+name: NIFTY 500 Daily Intelligence
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Choose morning prediction or 5 PM EOD audit"
+        required: true
+        default: "scan"
+        type: choice
+        options:
+          - scan
+          - eod
   schedule:
     - cron: "30 3 * * 1-5"
+    - cron: "30 11 * * 1-5"
 
 permissions:
   contents: write
 
 jobs:
-  scan:
+  intelligence:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,19 +36,30 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Run NIFTY scanner
-        run: python nifty500_scanner.py
-
-      - name: Verify generated files
+      - name: Run morning prediction or EOD audit
+        env:
+          MODE: ${{ github.event.inputs.mode || '' }}
+          SCHEDULE: ${{ github.event.schedule || '' }}
         run: |
-          test -s data/nifty500_scan.csv
-          test -s data/nifty500_report.json
-          echo "Generated files:"
+          if [ "$MODE" = "eod" ] || [ "$SCHEDULE" = "30 11 * * 1-5" ]; then
+            python nifty500_eod.py
+          else
+            python nifty500_scanner.py
+          fi
+
+      - name: Verify generated data
+        run: |
+          mkdir -p data
           ls -lh data/
 
-      - name: Commit scan data
+      - name: Commit intelligence data
         run: |
           git config user.name "ReliancePower360 Bot"
           git config user.email "actions@github.com"
-          git add -f data/nifty500_scan.csv data/nifty500_report.json
-          git diff --cached --quiet && echo "No data changes" || (git commit -m "Update NIFTY 500 daily scan" && git push origin main)
+          git add -f data/
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "Update NIFTY 500 intelligence"
+            git push origin main
+          fi
