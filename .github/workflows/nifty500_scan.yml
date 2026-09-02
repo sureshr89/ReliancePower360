@@ -47,10 +47,21 @@ jobs:
             python nifty500_scanner.py
           fi
 
-      - name: Verify generated data
+      - name: Verify generated data and news evidence
         run: |
           mkdir -p data
           ls -lh data/
+          python - <<'PY'
+          import json, pandas as pd
+          r=json.load(open("data/nifty500_report.json"))
+          print("NEWS ARTICLES SAVED:", r.get("news_articles_saved"))
+          n=pd.read_csv("data/nifty500_prediction_news.csv")
+          print("NEWS ROWS:", len(n))
+          if len(n)==0:
+              print("WARNING: No dated news evidence was collected")
+          else:
+              print(n[["ticker","published_date","published_at","source","title","sentiment"]].head(20).to_string(index=False))
+          PY
 
       - name: Commit intelligence data
         run: |
