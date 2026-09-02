@@ -47,21 +47,28 @@ jobs:
             python nifty500_scanner.py
           fi
 
-      - name: Verify generated data and news evidence
+      - name: Verify generated output
+        env:
+          MODE: ${{ github.event.inputs.mode || '' }}
+          SCHEDULE: ${{ github.event.schedule || '' }}
         run: |
           mkdir -p data
           ls -lh data/
-          python - <<'PY'
-          import json, pandas as pd
-          r=json.load(open("data/nifty500_report.json"))
-          print("NEWS ARTICLES SAVED:", r.get("news_articles_saved"))
-          n=pd.read_csv("data/nifty500_prediction_news.csv")
-          print("NEWS ROWS:", len(n))
-          if len(n)==0:
-              print("WARNING: No dated news evidence was collected")
-          else:
-              print(n[["ticker","published_date","published_at","source","title","sentiment"]].head(20).to_string(index=False))
-          PY
+          if [ "$MODE" = "eod" ] || [ "$SCHEDULE" = "30 11 * * 1-5" ]; then
+            test -s data/nifty500_eod_audit.csv
+            echo "EOD AUDIT FILE:"
+            head -20 data/nifty500_eod_audit.csv
+          else
+            test -s data/nifty500_scan.csv
+            test -s data/nifty500_prediction_news.csv
+            python - <<'PY'
+            import json, pandas as pd
+            r=json.load(open("data/nifty500_report.json"))
+            print("NEWS ARTICLES SAVED:", r.get("news_articles_saved"))
+            n=pd.read_csv("data/nifty500_prediction_news.csv")
+            print("NEWS ROWS:", len(n))
+            PY
+          fi
 
       - name: Commit intelligence data
         run: |
