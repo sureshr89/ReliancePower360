@@ -25,7 +25,8 @@ def name(v):
 @st.cache_data(ttl=45)
 def live_index(symbol):
     try:
-        url="https://query1.finance.yahoo.com/v8/finance/chart/"+symbol
+        from urllib.parse import quote
+        url="https://query1.finance.yahoo.com/v8/finance/chart/"+quote(symbol,safe="")
         j=requests.get(url,params={"range":"2d","interval":"1m"},headers={"User-Agent":"Mozilla/5.0"},timeout=8).json()
         z=j["chart"]["result"][0]
         vals=[x for x in z["indicators"]["quote"][0].get("close",[]) if x is not None]
@@ -77,7 +78,7 @@ else:
             "Stock":name(ticker),
             "Prediction":x.get("prediction","WAITING"),
             "Confidence %":x.get("confidence",""),
-            "News that influenced prediction":" | ".join(headlines) if headlines else "No dated stock-specific news — momentum-led.",
+            "Evidence": " | ".join(headlines) if headlines else "⚪ INSUFFICIENT NEWS EVIDENCE — prediction held neutral until dated stock news is collected.",
             "Momentum evidence":f"1Y {x.get('1Y','—')}% | 6M {x.get('6M','—')}% | 1M {x.get('1M','—')}% | 1W {x.get('1W','—')}% | 1D {x.get('1D','—')}%"
         })
     st.dataframe(pd.DataFrame(rows),use_container_width=True,hide_index=True)
