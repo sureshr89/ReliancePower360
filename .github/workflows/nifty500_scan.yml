@@ -55,19 +55,14 @@ jobs:
           mkdir -p data
           ls -lh data/
           if [ "$MODE" = "eod" ] || [ "$SCHEDULE" = "30 11 * * 1-5" ]; then
-            test -s data/nifty500_eod_audit.csv
             echo "EOD AUDIT FILE:"
+            test -s data/nifty500_eod_audit.csv
             head -20 data/nifty500_eod_audit.csv
           else
+            echo "SCAN OUTPUT:"
             test -s data/nifty500_scan.csv
             test -s data/nifty500_prediction_news.csv
-            python - <<'PY'
-            import json, pandas as pd
-            r=json.load(open("data/nifty500_report.json"))
-            print("NEWS ARTICLES SAVED:", r.get("news_articles_saved"))
-            n=pd.read_csv("data/nifty500_prediction_news.csv")
-            print("NEWS ROWS:", len(n))
-            PY
+            python -c 'import json,pandas as pd; r=json.load(open("data/nifty500_report.json")); n=pd.read_csv("data/nifty500_prediction_news.csv"); print("NEWS ARTICLES SAVED:",r.get("news_articles_saved")); print("NEWS ROWS:",len(n))'
           fi
 
       - name: Commit intelligence data
