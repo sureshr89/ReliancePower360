@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-02T13:52:32.361531+00:00",
+  "generated_at": "2026-09-02T17:31:16.189277+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 58.78,
-    "news_outlook": "NEUTRAL",
-    "confidence": 18,
-    "article_count": 15,
-    "bullish_count": 7,
-    "bearish_count": 4,
-    "neutral_count": 4
+    "news_score": 63.75,
+    "news_outlook": "BULLISH",
+    "confidence": 28,
+    "article_count": 14,
+    "bullish_count": 8,
+    "bearish_count": 3,
+    "neutral_count": 3
   },
   "price": {
     "symbol": "RELIANCE.NS",
@@ -32,46 +32,38 @@
       {
         "direction": "positive",
         "title": "Reliance Power Ltd. Financials – Balance Sheet, Profit & Loss, Cash Flow - Value Research",
-        "source": "Google News - Results",
+        "source": "Google News - Company",
         "published": "Tue, 01 Sep 2026 03:53:11 GMT",
         "impact": 3,
         "signal": 1.171
-      },
-      {
-        "direction": "positive",
-        "title": "Reliance Power vs Nifty 50: Share Price Performance Compared - univest.in",
-        "source": "Google News - Stock",
-        "published": "Wed, 02 Sep 2026 07:51:00 GMT",
-        "impact": 1,
-        "signal": 0.582
       }
     ],
     "news_used": {
-      "today": 1,
+      "today": 0,
       "yesterday": 1,
-      "used_total": 2
+      "used_total": 1
     },
     "explanation": "Reliance Power rose +0.31% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 85.3,
+      "score": 67.9,
       "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
-      "today_articles": 1,
+      "today_articles": 0,
       "yesterday_articles": 1,
-      "used_total": 2
+      "used_total": 1
     }
   },
   "prediction_news_window": {
-    "today_articles": 1,
+    "today_articles": 0,
     "yesterday_articles": 1,
-    "used_total": 2
+    "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 15
+    "RSS": 14
   }
 }
