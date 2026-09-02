@@ -67,20 +67,22 @@ jobs:
         run: |
           git config user.name "ReliancePower360 Bot"
           git config user.email "actions@github.com"
-          git add -f data/
-          if git diff --cached --quiet; then
-            echo "No data changes"
-          else
+          # Generated files are snapshots. Do not rebase snapshot commits because
+          # concurrent runs naturally modify the same files.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            git add -f data/
+            if git diff --cached --quiet; then
+              echo "No data changes"
+              exit 0
+            fi
             git commit -m "Update NIFTY 500 intelligence"
-            # Another commit may reach main while this scan is running.
-            # Rebase the generated data commit onto the latest main and retry safely.
-            for attempt in 1 2 3; do
-              git fetch origin main
-              git rebase origin/main && git push origin HEAD:main && exit 0
-              git rebase --abort || true
-              echo "Push attempt $attempt failed due to concurrent update; retrying..."
-              sleep $((attempt * 3))
-            done
-            echo "Unable to push generated intelligence after retries"
-            exit 1
-          fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push attempt $attempt lost a concurrent update; rebuilding commit..."
+            sleep $((attempt * 2))
+          done
+          echo "Unable to push generated intelligence after retries"
+          exit 1
