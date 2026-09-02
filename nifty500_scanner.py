@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
+from dateutil import parser as dateparser
 import pandas as pd
 import requests, feedparser
 
@@ -29,11 +30,16 @@ def ch(d,n):
  return round((b/a-1)*100,2) if a else None
 
 def published(e):
- for k in ("published","updated"):
+ for k in ("published_parsed","updated_parsed"):
+  v=e.get(k)
+  if v:
+   try:return datetime(*v[:6],tzinfo=ZoneInfo("UTC")).astimezone(IST)
+   except:pass
+ for k in ("published","updated","pubDate"):
   v=e.get(k)
   if v:
    try:
-    x=parsedate_to_datetime(v)
+    x=dateparser.parse(str(v),fuzzy=True)
     if x.tzinfo is None:x=x.replace(tzinfo=IST)
     return x.astimezone(IST)
    except:pass
@@ -49,25 +55,25 @@ def sentiment(title):
 def news_for(symbol, now):
  name=COMPANY.get(symbol,symbol)
  queries=[f'"{name}"',f'"{name}" stock',f'"{name}" shares',f'"{name}" NSE']
- items=[]
+ items=[]; seen=set(); start=now-timedelta(days=1)
  for query in queries:
-  q=requests.utils.quote(query)
-  for tpl in RSS:
-   feed=feedparser.parse(tpl.format(q=q))
-   for e in feed.entries:
-    dt=published(e)
-    if not dt:
-     continue
-    if dt.date() not in {now.date(),(now-timedelta(days=1)).date()} or dt>now:
-     continue
-    title=re.sub(r"\s+"," ",e.get("title","")).strip()
-    # Google News titles sometimes append the publisher after a dash.
-    # Keep the exact article heading as supplied, but reject obvious unrelated matches.
-    link=e.get("link","")
-    key=(title.lower(),dt.date())
-    if title and key not in {(x["title"].lower(),x["published_date"]) for x in items}:
-     items.append({"ticker":symbol,"title":title,"source":"Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":link,"sentiment":sentiment(title),"weight":7})
- return items[:20]
+  url=RSS[0].format(q=requests.utils.quote(query))
+  try:
+   resp=requests.get(url,headers={"User-Agent":"Mozilla/5.0"},timeout=25)
+   resp.raise_for_status(); feed=feedparser.parse(resp.content)
+  except Exception: continue
+  for e in getattr(feed,"entries",[]):
+   dt=published(e)
+   if not dt or dt<start or dt>now: continue
+   title=re.sub(r"\s+"," ",e.get("title","")).strip()
+   if not title: continue
+   key=re.sub(r"[^a-z0-9]+","",title.lower())
+   if key in seen: continue
+   seen.add(key)
+   src=e.get("source",{})
+   source=src.get("title","Google News") if hasattr(src,"get") else "Google News"
+   items.append({"ticker":symbol,"title":title,"source":source or "Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":e.get("link",""),"sentiment":sentiment(title),"weight":7})
+ return sorted(items,key=lambda x:x["published_at"],reverse=True)[:20]
 
 def main():
  now=datetime.now(IST); rows=[]; all_news=[]; errors=[]
