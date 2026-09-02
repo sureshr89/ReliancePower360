@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-02T12:17:52.315491+00:00",
+  "generated_at": "2026-09-02T13:52:32.361531+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 57.44,
+    "news_score": 58.78,
     "news_outlook": "NEUTRAL",
-    "confidence": 15,
-    "article_count": 19,
-    "bullish_count": 9,
-    "bearish_count": 5,
-    "neutral_count": 5
+    "confidence": 18,
+    "article_count": 15,
+    "bullish_count": 7,
+    "bearish_count": 4,
+    "neutral_count": 4
   },
   "price": {
     "symbol": "RELIANCE.NS",
@@ -32,15 +32,15 @@
       {
         "direction": "positive",
         "title": "Reliance Power Ltd. Financials – Balance Sheet, Profit & Loss, Cash Flow - Value Research",
-        "source": "Google News - Company",
+        "source": "Google News - Results",
         "published": "Tue, 01 Sep 2026 03:53:11 GMT",
         "impact": 3,
         "signal": 1.171
       },
       {
         "direction": "positive",
-        "title": "Reliance Power vs Nifty 50: Share Price Performance Compared - Univest",
-        "source": "Google News - Company",
+        "title": "Reliance Power vs Nifty 50: Share Price Performance Compared - univest.in",
+        "source": "Google News - Stock",
         "published": "Wed, 02 Sep 2026 07:51:00 GMT",
         "impact": 1,
         "signal": 0.582
@@ -72,6 +72,6 @@
     "used_total": 2
   },
   "source_breakdown": {
-    "RSS": 19
+    "RSS": 15
   }
 }
