@@ -10,7 +10,7 @@ IST = ZoneInfo("Asia/Kolkata")
 DATA = Path("data")
 DATA.mkdir(parents=True, exist_ok=True)
 URL = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
-DEFAULT = "RELIANCE.NS,RELIANCEPOWER.NS,TCS.NS,INFY.NS,SBIN.NS,ITC.NS,HDFCBANK.NS,ICICIBANK.NS,LT.NS,BHARTIARTL.NS"
+DEFAULT = "RELIANCE.NS,RPOWER.NS,TCS.NS,INFY.NS,SBIN.NS,ITC.NS,HDFCBANK.NS,ICICIBANK.NS,LT.NS,BHARTIARTL.NS"
 
 def get_history(ticker):
     response = requests.get(
