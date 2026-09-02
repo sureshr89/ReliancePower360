@@ -12,6 +12,7 @@ DATA=Path("data"); DATA.mkdir(parents=True,exist_ok=True)
 PRICE_URL="https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
 DEFAULT="RELIANCE.NS,RPOWER.NS,TCS.NS,INFY.NS,SBIN.NS,ITC.NS,HDFCBANK.NS,ICICIBANK.NS,LT.NS,BHARTIARTL.NS"
 RSS=["https://news.google.com/rss/search?q={q}&hl=en-IN&gl=IN&ceid=IN:en"]
+ALIASES={"RELIANCEPOWER.NS":"RPOWER.NS","RELIANCEPOWER":"RPOWER.NS"}
 
 def hist(t):
  r=requests.get(PRICE_URL.format(ticker=t),params={"range":"2y","interval":"1d"},headers={"User-Agent":"Mozilla/5.0"},timeout=30);r.raise_for_status()
@@ -46,28 +47,30 @@ def sentiment(title):
 
 def news_for(symbol, now):
  name={"RPOWER":"Reliance Power","RELIANCE":"Reliance Industries"}.get(symbol,symbol)
- q=requests.utils.quote(f'"{name}" OR "{symbol}" shares OR "{symbol}" stock')
+ queries=[f'"{name}"',f'"{name}" stock',f'"{name}" shares']
  items=[]
- for tpl in RSS:
-  feed=feedparser.parse(tpl.format(q=q))
-  if getattr(feed, "bozo", False):
-   continue
-  for e in feed.entries:
-   dt=published(e)
-   if not dt:
+ for query in queries:
+  q=requests.utils.quote(query)
+  for tpl in RSS:
+   feed=feedparser.parse(tpl.format(q=q))
+   if getattr(feed, "bozo", False):
     continue
-   if dt.date() not in {now.date(),(now-timedelta(days=1)).date()}:
-    continue
-   title=re.sub(r"\s+"," ",e.get("title","")).strip()
-   link=e.get("link","")
-   key=(title.lower(),dt.date())
-   if title and key not in {(x["title"].lower(),x["published_date"]) for x in items}:
-    items.append({"ticker":symbol,"title":title,"source":"Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":link,"sentiment":sentiment(title),"weight":7})
+   for e in feed.entries:
+    dt=published(e)
+    if not dt:
+     continue
+    if dt.date() not in {now.date(),(now-timedelta(days=1)).date()} or dt>now:
+     continue
+    title=re.sub(r"\s+"," ",e.get("title","")).strip()
+    link=e.get("link","")
+    key=(title.lower(),dt.date())
+    if title and key not in {(x["title"].lower(),x["published_date"]) for x in items}:
+     items.append({"ticker":symbol,"title":title,"source":"Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":link,"sentiment":sentiment(title),"weight":7})
  return items[:20]
 
 def main():
  now=datetime.now(IST); rows=[]; all_news=[]; errors=[]
- tickers=[x.strip().upper() for x in os.getenv("NIFTY500_TICKERS",DEFAULT).split(",") if x.strip()]
+ tickers=[ALIASES.get(x.strip().upper(),x.strip().upper()) for x in os.getenv("NIFTY500_TICKERS",DEFAULT).split(",") if x.strip()]
  for ticker in tickers:
   try:
    d=hist(ticker); symbol=ticker.replace(".NS","")
@@ -100,7 +103,7 @@ def main():
  out.to_csv(DATA/"nifty500_scan.csv",index=False)
  pd.DataFrame(all_news,columns=["ticker","title","source","published_at","published_date","link","sentiment","weight"]).to_csv(DATA/"nifty500_prediction_news.csv",index=False)
  b=int((out.prediction=="BULLISH").sum());be=int((out.prediction=="BEARISH").sum())
- report={"generated_at":now.isoformat(),"prediction_date":now.strftime("%d %b %Y"),"prediction_time":now.strftime("%I:%M %p IST"),"universe_scanned":len(out),"bullish":b,"bearish":be,"neutral":int((out.prediction=="NEUTRAL").sum()),"market_direction":"BULLISH" if b>be else "BEARISH" if be>b else "NEUTRAL","news_window":[(now-timedelta(days=1)).strftime("%d %b %Y"),now.strftime("%d %b %Y")],"scan_status":"OK","errors":errors}
+ report={"generated_at":now.isoformat(),"prediction_date":now.strftime("%d %b %Y"),"prediction_time":now.strftime("%I:%M %p IST"),"universe_scanned":len(out),"bullish":b,"bearish":be,"neutral":int((out.prediction=="NEUTRAL").sum()),"market_direction":"BULLISH" if b>be else "BEARISH" if be>b else "NEUTRAL","news_window":[(now-timedelta(days=1)).strftime("%d %b %Y"),now.strftime("%d %b %Y")],"news_articles_saved":len(all_news),"scan_status":"OK","errors":errors}
  (DATA/"nifty500_report.json").write_text(json.dumps(report,indent=2),encoding="utf-8")
  print(json.dumps(report,indent=2))
 if __name__=="__main__":
