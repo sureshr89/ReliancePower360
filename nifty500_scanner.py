@@ -46,20 +46,24 @@ def sentiment(title):
 
 def news_for(symbol, now):
  name={"RPOWER":"Reliance Power","RELIANCE":"Reliance Industries"}.get(symbol,symbol)
- q=requests.utils.quote(f'"{name}" stock OR shares')
+ q=requests.utils.quote(f'"{name}" OR "{symbol}" shares OR "{symbol}" stock')
  items=[]
  for tpl in RSS:
   feed=feedparser.parse(tpl.format(q=q))
+  if getattr(feed, "bozo", False):
+   continue
   for e in feed.entries:
    dt=published(e)
-   if not dt: continue
-   if dt.date() not in {now.date(),(now-timedelta(days=1)).date()}: continue
+   if not dt:
+    continue
+   if dt.date() not in {now.date(),(now-timedelta(days=1)).date()}:
+    continue
    title=re.sub(r"\s+"," ",e.get("title","")).strip()
    link=e.get("link","")
    key=(title.lower(),dt.date())
    if title and key not in {(x["title"].lower(),x["published_date"]) for x in items}:
     items.append({"ticker":symbol,"title":title,"source":"Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":link,"sentiment":sentiment(title),"weight":7})
- return items[:12]
+ return items[:20]
 
 def main():
  now=datetime.now(IST); rows=[]; all_news=[]; errors=[]
