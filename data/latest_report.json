@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-09-02T09:36:21.372994+00:00",
+  "generated_at": "2026-09-02T12:17:52.315491+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 53.38,
+    "news_score": 57.44,
     "news_outlook": "NEUTRAL",
-    "confidence": 7,
-    "article_count": 15,
-    "bullish_count": 6,
+    "confidence": 15,
+    "article_count": 19,
+    "bullish_count": 9,
     "bearish_count": 5,
-    "neutral_count": 4
+    "neutral_count": 5
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1311.1,
-    "daily_change_pct": 0.16,
-    "five_day_change_pct": 1.01,
+    "last_price": 1313.1,
+    "daily_change_pct": 0.31,
+    "five_day_change_pct": 1.16,
     "as_of": "2026-09-02",
     "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": 0.16,
-    "five_day_price_change_pct": 1.01,
+    "daily_price_change_pct": 0.31,
+    "five_day_price_change_pct": 1.16,
     "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
     "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
@@ -31,7 +31,15 @@
     "today_drivers": [
       {
         "direction": "positive",
-        "title": "Reliance Power vs Nifty 50: Share Price Performance Compared - univest.in",
+        "title": "Reliance Power Ltd. Financials – Balance Sheet, Profit & Loss, Cash Flow - Value Research",
+        "source": "Google News - Company",
+        "published": "Tue, 01 Sep 2026 03:53:11 GMT",
+        "impact": 3,
+        "signal": 1.171
+      },
+      {
+        "direction": "positive",
+        "title": "Reliance Power vs Nifty 50: Share Price Performance Compared - Univest",
         "source": "Google News - Company",
         "published": "Wed, 02 Sep 2026 07:51:00 GMT",
         "impact": 1,
@@ -40,30 +48,30 @@
     ],
     "news_used": {
       "today": 1,
-      "yesterday": 0,
-      "used_total": 1
+      "yesterday": 1,
+      "used_total": 2
     },
-    "explanation": "Reliance Power rose +0.16% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power rose +0.31% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 67.6,
+      "score": 85.3,
       "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
       "today_articles": 1,
-      "yesterday_articles": 0,
-      "used_total": 1
+      "yesterday_articles": 1,
+      "used_total": 2
     }
   },
   "prediction_news_window": {
     "today_articles": 1,
-    "yesterday_articles": 0,
-    "used_total": 1
+    "yesterday_articles": 1,
+    "used_total": 2
   },
   "source_breakdown": {
-    "RSS": 15
+    "RSS": 19
   }
 }
