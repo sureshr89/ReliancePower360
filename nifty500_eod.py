@@ -55,6 +55,8 @@ def run():
                 "actual_eod": actual,
                 "eod_move_pct": move,
                 "matched": matched,
+                "prediction_reason": f"Prediction {prediction} based on saved momentum and dated news evidence.",
+                "eod_reason": (f"Price moved {move:+.2f}% and followed the predicted direction." if matched else f"Price moved {move:+.2f}%, which did not follow the predicted {prediction} direction. Other intraday market factors outweighed the pre-market evidence."),
                 "eod_checked_at": datetime.now(IST).strftime("%d %b %Y %I:%M %p IST"),
             })
         except Exception as exc:
