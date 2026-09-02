@@ -74,13 +74,29 @@ def main():
    vals={k:ch(d,n) for k,n in {"1Y":252,"6M":126,"1M":21,"1W":5,"1D":1}.items()}
    momentum=sum(1 if v and v>0 else -1 if v and v<0 else 0 for v in vals.values())
    news=news_for(symbol,now); all_news.extend(news)
-   ns=sum((1 if x["sentiment"]=="BULLISH" else -1 if x["sentiment"]=="BEARISH" else 0)*x["weight"] for x in news)
-   score=momentum+ns/10
-   pred="BULLISH" if score>=2 else "BEARISH" if score<=-2 else "NEUTRAL"
-   rows.append({"ticker":symbol,**vals,"set":"".join("+" if v and v>0 else "-" if v and v<0 else "0" for v in vals.values()),"momentum_score":momentum,"news_score":round(ns,2),"news_count":len(news),"prediction":pred,"confidence":min(95,round(50+abs(score)*8)),"last_close":round(float(d.close.iloc[-1]),2)})
+   bull=sum(x["weight"] for x in news if x["sentiment"]=="BULLISH")
+   bear=sum(x["weight"] for x in news if x["sentiment"]=="BEARISH")
+   neutral=sum(x["weight"] for x in news if x["sentiment"]=="NEUTRAL")
+   ns=bull-bear
+   # NEWS-FIRST RULE: without relevant dated stock news, confidence is capped at 55%.
+   # Momentum can only support a news-driven prediction, never create a 95% prediction.
+   if not news:
+    score=momentum*0.25
+    pred="NEUTRAL"
+    confidence=50
+    driver="NO RELEVANT NEWS"
+   else:
+    news_strength=abs(ns)/(bull+bear+neutral) if (bull+bear+neutral) else 0
+    score=ns/7 + momentum*0.20
+    if ns>=7: pred="BULLISH"
+    elif ns<=-7: pred="BEARISH"
+    else: pred="NEUTRAL"
+    confidence=min(90,round(50 + min(30,news_strength*30) + min(10,abs(momentum)*2)))
+    driver="NEWS" if abs(ns)>=7 else "MIXED"
+   rows.append({"ticker":symbol,**vals,"set":"".join("+" if v and v>0 else "-" if v and v<0 else "0" for v in vals.values()),"momentum_score":momentum,"news_score":round(ns,2),"news_count":len(news),"news_bullish_weight":bull,"news_bearish_weight":bear,"news_neutral_weight":neutral,"primary_driver":driver,"prediction":pred,"confidence":confidence,"last_close":round(float(d.close.iloc[-1]),2)})
   except Exception as e:errors.append(f"{ticker}: {e}")
  if not rows:raise RuntimeError("No usable price data. "+" | ".join(errors[:5]))
- out=pd.DataFrame(rows).sort_values(["confidence","momentum_score"],ascending=False);out["priority"]=range(1,len(out)+1);out["prediction_date"]=now.strftime("%Y-%m-%d");out["prediction_time"]=now.strftime("%H:%M:%S IST")
+ out=pd.DataFrame(rows).sort_values(["confidence","news_count","momentum_score"],ascending=False);out["priority"]=range(1,len(out)+1);out["prediction_date"]=now.strftime("%Y-%m-%d");out["prediction_time"]=now.strftime("%H:%M:%S IST")
  out.to_csv(DATA/"nifty500_scan.csv",index=False)
  pd.DataFrame(all_news,columns=["ticker","title","source","published_at","published_date","link","sentiment","weight"]).to_csv(DATA/"nifty500_prediction_news.csv",index=False)
  b=int((out.prediction=="BULLISH").sum());be=int((out.prediction=="BEARISH").sum())
