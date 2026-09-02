@@ -1,31 +1,31 @@
 {
-  "generated_at": "2026-09-02T00:43:31.279371+00:00",
+  "generated_at": "2026-09-02T05:08:39.160809+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 60.59,
+    "news_score": 61.03,
     "news_outlook": "BULLISH",
-    "confidence": 21,
-    "article_count": 19,
+    "confidence": 22,
+    "article_count": 18,
     "bullish_count": 10,
     "bearish_count": 4,
-    "neutral_count": 5
+    "neutral_count": 4
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1309.0,
-    "daily_change_pct": 2.51,
-    "five_day_change_pct": -0.61,
-    "as_of": "2026-09-01",
+    "last_price": 1317.1,
+    "daily_change_pct": 0.62,
+    "five_day_change_pct": 1.47,
+    "as_of": "2026-09-02",
     "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": 2.51,
-    "five_day_price_change_pct": -0.61,
-    "relation": "News and price are moving in the same positive direction.",
-    "why_up_down": "News and price are moving in the same positive direction."
+    "daily_price_change_pct": 0.62,
+    "five_day_price_change_pct": 1.47,
+    "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
+    "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
   "today_explanation": {
     "today_drivers": [
@@ -43,11 +43,11 @@
       "yesterday": 1,
       "used_total": 1
     },
-    "explanation": "Reliance Power rose +2.51% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power rose +0.62% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 70.1,
+      "score": 68.2,
       "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
@@ -64,6 +64,6 @@
     "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 19
+    "RSS": 18
   }
 }
