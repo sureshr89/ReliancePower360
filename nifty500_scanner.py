@@ -54,7 +54,17 @@ def sentiment(title):
 
 def news_for(symbol, now):
  name=COMPANY.get(symbol,symbol)
- queries=[f'"{name}"',f'"{name}" stock',f'"{name}" shares',f'"{name}" NSE']
+ symbol_q=symbol.replace("&","")
+ queries=[
+  f'"{name}"',
+  f'"{name}" stock',
+  f'"{name}" shares',
+  f'"{name}" NSE',
+  f'"{name}" results OR order OR contract OR profit OR loss',
+  f'"{name}" site:moneycontrol.com',
+  f'"{name}" site:livemint.com OR site:economictimes.indiatimes.com OR site:business-standard.com',
+  f'"{name}" site:reuters.com OR site:businessline.com OR site:cnbctv18.com'
+ ]
  items=[]; seen=set(); start=now-timedelta(days=1)
  for query in queries:
   url=RSS[0].format(q=requests.utils.quote(query))
@@ -67,13 +77,21 @@ def news_for(symbol, now):
    if not dt or dt<start or dt>now: continue
    title=re.sub(r"\s+"," ",e.get("title","")).strip()
    if not title: continue
-   key=re.sub(r"[^a-z0-9]+","",title.lower())
+   low=title.lower()
+   # Strict stock relevance: company name, recognised symbol, or clear company reference.
+   tokens=[name.lower(), symbol.lower(), symbol_q.lower()]
+   if not any(t and t in low for t in tokens): continue
+   key=re.sub(r"[^a-z0-9]+","",low)
    if key in seen: continue
    seen.add(key)
    src=e.get("source",{})
    source=src.get("title","Google News") if hasattr(src,"get") else "Google News"
-   items.append({"ticker":symbol,"title":title,"source":source or "Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":e.get("link",""),"sentiment":sentiment(title),"weight":7})
- return sorted(items,key=lambda x:x["published_at"],reverse=True)[:20]
+   source_l=str(source).lower()
+   weight=7
+   if any(x in source_l for x in ["nse","bse","reliancepower.co.in","official"]): weight=10
+   elif any(x in source_l for x in ["reuters","business standard","economic times","livemint","moneycontrol","businessline","cnbc"]): weight=8
+   items.append({"ticker":symbol,"title":title,"source":source or "Google News","published_at":dt.strftime("%d %b %Y %I:%M %p IST"),"published_date":dt.strftime("%Y-%m-%d"),"link":e.get("link",""),"sentiment":sentiment(title),"weight":weight})
+ return sorted(items,key=lambda x:x["published_at"],reverse=True)[:30]
 
 def main():
  now=datetime.now(IST); rows=[]; all_news=[]; errors=[]
