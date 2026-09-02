@@ -1,5 +1,15 @@
 from pathlib import Path
 import json,pandas as pd,streamlit as st
+
+NAMES={"RELIANCE":"Reliance Industries","RPOWER":"Reliance Power","TCS":"Tata Consultancy Services","INFY":"Infosys","SBIN":"State Bank of India","ITC":"ITC Limited","HDFCBANK":"HDFC Bank","ICICIBANK":"ICICI Bank","LT":"Larsen & Toubro","BHARTIARTL":"Bharti Airtel"}
+def clear_stock(v):
+    v=str(v).replace(".NS","").upper().strip()
+    return NAMES.get(v,v)
+def clear_set(v):
+    labels=["1 Year","6 Months","1 Month","1 Week","1 Day"]
+    signs=list(str(v))
+    if len(signs)!=5:return str(v)
+    return " • ".join(f"{labels[i]}: {'UP' if x=='+' else 'DOWN' if x=='-' else 'FLAT'}" for i,x in enumerate(signs))
 st.set_page_config(page_title="NIFTY 500 Daily Intelligence",page_icon="📊",layout="wide")
 D=Path(__file__).parent/"data"
 def csv(n):
@@ -14,16 +24,19 @@ window=r.get("news_window",[])
 st.caption(f"Prediction: {r.get('prediction_date','Waiting')} • {r.get('prediction_time','—')} | News evidence: {' + '.join(window) if window else 'No saved news window'}")
 c1,c2,c3,c4=st.columns(4);c1.metric("Market",r.get("market_direction","WAITING"));c2.metric("Scanned",r.get("universe_scanned",0));c3.metric("Bullish",r.get("bullish",0));c4.metric("Bearish",r.get("bearish",0))
 st.header("🏆 Priority Order & Prediction")
+if not s.empty and "ticker" in s: s["Stock"]=s["ticker"].map(clear_stock)
+if not s.empty and "set" in s: s["Momentum"]=s["set"].map(clear_set)
 if s.empty: st.warning("No scan data yet.")
 else:
- cols=[x for x in ["priority","ticker","set","1Y","6M","1M","1W","1D","momentum_score","news_count","news_score","prediction","confidence","last_close"] if x in s]
+ cols=[x for x in ["priority","Stock","Momentum","1Y","6M","1M","1W","1D","momentum_score","news_count","news_score","prediction","confidence","last_close"] if x in s]
  st.dataframe(s[cols],use_container_width=True,hide_index=True)
 st.header("🧠 How each prediction was calculated")
 if s.empty: st.info("Run a fresh scan to create the prediction snapshot.")
 else:
  for _,x in s.sort_values("priority").iterrows():
   ticker=x.get("ticker","")
-  with st.expander(f"#{int(x.get('priority',0))} {ticker} → {x.get('prediction','WAITING')} ({x.get('confidence','—')}%)"):
+  stock_name=clear_stock(ticker)
+  with st.expander(f"#{int(x.get('priority',0))} {stock_name} ({ticker}) → {x.get('prediction','WAITING')} ({x.get('confidence','—')}%)"):
    st.write(f"Momentum score: **{x.get('momentum_score','—')}** | News score: **{x.get('news_score','—')}** | Final prediction: **{x.get('prediction','—')}**")
    st.caption(f"Momentum inputs — 1Y {x.get('1Y','—')}% • 6M {x.get('6M','—')}% • 1M {x.get('1M','—')}% • 1W {x.get('1W','—')}% • 1D {x.get('1D','—')}%")
    nn=n[n["ticker"].astype(str)==str(ticker)] if not n.empty and "ticker" in n else pd.DataFrame()
