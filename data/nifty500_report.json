@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-09-02T18:01:24.767478+05:30",
-  "prediction_date": "02 Sep 2026",
-  "prediction_time": "06:01 PM IST",
+  "generated_at": "2026-09-03T13:41:35.952581+05:30",
+  "prediction_date": "03 Sep 2026",
+  "prediction_time": "01:41 PM IST",
   "universe_scanned": 10,
-  "bullish": 3,
-  "bearish": 3,
+  "bullish": 2,
+  "bearish": 4,
   "neutral": 4,
-  "market_direction": "NEUTRAL",
+  "market_direction": "BEARISH",
   "news_window": [
-    "01 Sep 2026",
-    "02 Sep 2026"
+    "02 Sep 2026",
+    "03 Sep 2026"
   ],
-  "news_articles_saved": 57,
+  "news_articles_saved": 47,
   "scan_status": "OK",
   "errors": []
 }
