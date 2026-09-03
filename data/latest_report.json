@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-03T20:05:20.378021+00:00",
+  "generated_at": "2026-09-03T22:32:06.363698+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 49.45,
+    "news_score": 51.02,
     "news_outlook": "NEUTRAL",
-    "confidence": 1,
-    "article_count": 6,
-    "bullish_count": 3,
-    "bearish_count": 2,
+    "confidence": 2,
+    "article_count": 10,
+    "bullish_count": 5,
+    "bearish_count": 4,
     "neutral_count": 1
   },
   "price": {
@@ -21,7 +21,7 @@
   },
   "news_price_relation": {
     "status": "OK",
-    "news_bias": "NEGATIVE",
+    "news_bias": "POSITIVE",
     "daily_price_change_pct": 0.31,
     "five_day_price_change_pct": 1.16,
     "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
@@ -64,6 +64,6 @@
     "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 6
+    "RSS": 10
   }
 }
