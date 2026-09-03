@@ -1,61 +1,69 @@
 {
-  "generated_at": "2026-09-03T09:41:16.958173+00:00",
+  "generated_at": "2026-09-03T13:54:09.826897+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 54.53,
-    "news_outlook": "NEUTRAL",
-    "confidence": 9,
-    "article_count": 27,
-    "bullish_count": 10,
-    "bearish_count": 5,
-    "neutral_count": 12
+    "news_score": 60.83,
+    "news_outlook": "BULLISH",
+    "confidence": 22,
+    "article_count": 3,
+    "bullish_count": 2,
+    "bearish_count": 0,
+    "neutral_count": 1
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1311.4,
-    "daily_change_pct": -0.13,
-    "five_day_change_pct": 2.28,
+    "last_price": 1302.5,
+    "daily_change_pct": -0.81,
+    "five_day_change_pct": 1.58,
     "as_of": "2026-09-03",
     "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": -0.13,
-    "five_day_price_change_pct": 2.28,
+    "daily_price_change_pct": -0.81,
+    "five_day_price_change_pct": 1.58,
     "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
     "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
   "today_explanation": {
-    "today_drivers": [],
-    "explanation": "No validated news from today or yesterday is available yet.",
+    "today_drivers": [
+      {
+        "direction": "positive",
+        "title": "Reliance Power Share Price: Buy or Sell - univest.in",
+        "source": "Google News - Results",
+        "published": "Thu, 03 Sep 2026 11:51:00 GMT",
+        "impact": 1,
+        "signal": 0.369
+      }
+    ],
     "news_used": {
-      "today": 0,
+      "today": 1,
       "yesterday": 0,
-      "used_total": 0
-    }
+      "used_total": 1
+    },
+    "explanation": "Reliance Power fell -0.81% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 49.9,
-      "outlook": "NEUTRAL",
+      "score": 60.3,
+      "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
-      "today_articles": 0,
+      "today_articles": 1,
       "yesterday_articles": 0,
-      "used_total": 0
+      "used_total": 1
     }
   },
   "prediction_news_window": {
-    "today_articles": 0,
+    "today_articles": 1,
     "yesterday_articles": 0,
-    "used_total": 0
+    "used_total": 1
   },
   "source_breakdown": {
-    "GDELT": 20,
-    "RSS": 7
+    "RSS": 3
   }
 }
