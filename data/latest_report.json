@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-03T13:54:09.826897+00:00",
+  "generated_at": "2026-09-03T17:28:50.372923+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 60.83,
+    "news_score": 61.2,
     "news_outlook": "BULLISH",
     "confidence": 22,
-    "article_count": 3,
-    "bullish_count": 2,
-    "bearish_count": 0,
+    "article_count": 8,
+    "bullish_count": 5,
+    "bearish_count": 2,
     "neutral_count": 1
   },
   "price": {
@@ -31,8 +31,8 @@
     "today_drivers": [
       {
         "direction": "positive",
-        "title": "Reliance Power Share Price: Buy or Sell - univest.in",
-        "source": "Google News - Results",
+        "title": "Reliance Power Share Price: Buy or Sell - Univest",
+        "source": "Google News - Company",
         "published": "Thu, 03 Sep 2026 11:51:00 GMT",
         "impact": 1,
         "signal": 0.369
@@ -64,6 +64,6 @@
     "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 3
+    "RSS": 8
   }
 }
