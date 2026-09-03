@@ -1,27 +1,31 @@
 {
-  "generated_at": "2026-09-03T05:04:26.082786+00:00",
+  "generated_at": "2026-09-03T09:41:16.958173+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 50.0,
+    "news_score": 54.53,
     "news_outlook": "NEUTRAL",
-    "confidence": 0,
-    "article_count": 0,
-    "bullish_count": 0,
-    "bearish_count": 0,
-    "neutral_count": 0
+    "confidence": 9,
+    "article_count": 27,
+    "bullish_count": 10,
+    "bearish_count": 5,
+    "neutral_count": 12
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1307.7,
-    "daily_change_pct": -0.41,
-    "five_day_change_pct": 1.99,
+    "last_price": 1311.4,
+    "daily_change_pct": -0.13,
+    "five_day_change_pct": 2.28,
     "as_of": "2026-09-03",
     "history_rows": 67
   },
   "news_price_relation": {
-    "status": "INSUFFICIENT_DATA",
-    "explanation": "Fresh news and/or price data is not yet sufficient."
+    "status": "OK",
+    "news_bias": "POSITIVE",
+    "daily_price_change_pct": -0.13,
+    "five_day_price_change_pct": 2.28,
+    "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
+    "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
   "today_explanation": {
     "today_drivers": [],
@@ -34,7 +38,7 @@
   },
   "forecast": {
     "current_session": {
-      "score": 49.6,
+      "score": 49.9,
       "outlook": "NEUTRAL",
       "target": "Current / remaining market session"
     },
@@ -50,5 +54,8 @@
     "yesterday_articles": 0,
     "used_total": 0
   },
-  "source_breakdown": {}
+  "source_breakdown": {
+    "GDELT": 20,
+    "RSS": 7
+  }
 }
