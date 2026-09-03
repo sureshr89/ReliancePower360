@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-09-03T17:28:50.372923+00:00",
+  "generated_at": "2026-09-03T20:05:20.378021+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 61.2,
-    "news_outlook": "BULLISH",
-    "confidence": 22,
-    "article_count": 8,
-    "bullish_count": 5,
+    "news_score": 49.45,
+    "news_outlook": "NEUTRAL",
+    "confidence": 1,
+    "article_count": 6,
+    "bullish_count": 3,
     "bearish_count": 2,
     "neutral_count": 1
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1302.5,
-    "daily_change_pct": -0.81,
-    "five_day_change_pct": 1.58,
-    "as_of": "2026-09-03",
-    "history_rows": 67
+    "last_price": 1313.1,
+    "daily_change_pct": 0.31,
+    "five_day_change_pct": 1.16,
+    "as_of": "2026-09-02",
+    "history_rows": 66
   },
   "news_price_relation": {
     "status": "OK",
-    "news_bias": "POSITIVE",
-    "daily_price_change_pct": -0.81,
-    "five_day_price_change_pct": 1.58,
+    "news_bias": "NEGATIVE",
+    "daily_price_change_pct": 0.31,
+    "five_day_price_change_pct": 1.16,
     "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
     "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
@@ -39,31 +39,31 @@
       }
     ],
     "news_used": {
-      "today": 1,
-      "yesterday": 0,
+      "today": 0,
+      "yesterday": 1,
       "used_total": 1
     },
-    "explanation": "Reliance Power fell -0.81% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power rose +0.31% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 60.3,
-      "outlook": "BULLISH",
+      "score": 55.8,
+      "outlook": "NEUTRAL",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
-      "today_articles": 1,
-      "yesterday_articles": 0,
+      "today_articles": 0,
+      "yesterday_articles": 1,
       "used_total": 1
     }
   },
   "prediction_news_window": {
-    "today_articles": 1,
-    "yesterday_articles": 0,
+    "today_articles": 0,
+    "yesterday_articles": 1,
     "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 8
+    "RSS": 6
   }
 }
