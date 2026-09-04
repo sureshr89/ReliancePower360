@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-09-03T22:32:06.363698+00:00",
+  "generated_at": "2026-09-04T00:20:02.881730+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 51.02,
+    "news_score": 59.05,
     "news_outlook": "NEUTRAL",
-    "confidence": 2,
-    "article_count": 10,
-    "bullish_count": 5,
-    "bearish_count": 4,
-    "neutral_count": 1
+    "confidence": 18,
+    "article_count": 11,
+    "bullish_count": 6,
+    "bearish_count": 3,
+    "neutral_count": 2
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1313.1,
-    "daily_change_pct": 0.31,
-    "five_day_change_pct": 1.16,
-    "as_of": "2026-09-02",
-    "history_rows": 66
+    "last_price": 1302.5,
+    "daily_change_pct": -0.81,
+    "five_day_change_pct": 1.58,
+    "as_of": "2026-09-03",
+    "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": 0.31,
-    "five_day_price_change_pct": 1.16,
+    "daily_price_change_pct": -0.81,
+    "five_day_price_change_pct": 1.58,
     "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
     "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
   },
@@ -43,11 +43,11 @@
       "yesterday": 1,
       "used_total": 1
     },
-    "explanation": "Reliance Power rose +0.31% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power fell -0.81% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 55.8,
+      "score": 54.7,
       "outlook": "NEUTRAL",
       "target": "Current / remaining market session"
     },
@@ -64,6 +64,6 @@
     "used_total": 1
   },
   "source_breakdown": {
-    "RSS": 10
+    "RSS": 11
   }
 }
