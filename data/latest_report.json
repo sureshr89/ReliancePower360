@@ -1,34 +1,42 @@
 {
-  "generated_at": "2026-09-04T00:20:02.881730+00:00",
+  "generated_at": "2026-09-04T04:46:31.867080+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 59.05,
+    "news_score": 56.82,
     "news_outlook": "NEUTRAL",
-    "confidence": 18,
-    "article_count": 11,
-    "bullish_count": 6,
-    "bearish_count": 3,
-    "neutral_count": 2
+    "confidence": 14,
+    "article_count": 14,
+    "bullish_count": 7,
+    "bearish_count": 4,
+    "neutral_count": 3
   },
   "price": {
     "symbol": "RELIANCE.NS",
-    "last_price": 1302.5,
-    "daily_change_pct": -0.81,
-    "five_day_change_pct": 1.58,
-    "as_of": "2026-09-03",
+    "last_price": 1327.5,
+    "daily_change_pct": 1.92,
+    "five_day_change_pct": 3.15,
+    "as_of": "2026-09-04",
     "history_rows": 67
   },
   "news_price_relation": {
     "status": "OK",
     "news_bias": "POSITIVE",
-    "daily_price_change_pct": -0.81,
-    "five_day_price_change_pct": 1.58,
-    "relation": "No strong same-day relationship detected; news impact may be delayed or mixed.",
-    "why_up_down": "No strong same-day relationship detected; news impact may be delayed or mixed."
+    "daily_price_change_pct": 1.92,
+    "five_day_price_change_pct": 3.15,
+    "relation": "News and price are moving in the same positive direction.",
+    "why_up_down": "News and price are moving in the same positive direction."
   },
   "today_explanation": {
     "today_drivers": [
+      {
+        "direction": "positive",
+        "title": "Reliance Power Share: Bull Case vs Bear Case for 2026 - Univest",
+        "source": "Google News - Company",
+        "published": "Thu, 03 Sep 2026 18:45:53 GMT",
+        "impact": 1,
+        "signal": 0.369
+      },
       {
         "direction": "positive",
         "title": "Reliance Power Share Price: Buy or Sell - Univest",
@@ -39,31 +47,31 @@
       }
     ],
     "news_used": {
-      "today": 0,
+      "today": 1,
       "yesterday": 1,
-      "used_total": 1
+      "used_total": 2
     },
-    "explanation": "Reliance Power fell -0.81% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+    "explanation": "Reliance Power rose +1.92% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 54.7,
-      "outlook": "NEUTRAL",
+      "score": 68.5,
+      "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
-      "today_articles": 0,
+      "today_articles": 1,
       "yesterday_articles": 1,
-      "used_total": 1
+      "used_total": 2
     }
   },
   "prediction_news_window": {
-    "today_articles": 0,
+    "today_articles": 1,
     "yesterday_articles": 1,
-    "used_total": 1
+    "used_total": 2
   },
   "source_breakdown": {
-    "RSS": 11
+    "RSS": 14
   }
 }
