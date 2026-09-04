@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-04T13:30:41.001399+00:00",
+  "generated_at": "2026-09-04T17:01:41.901542+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 60.72,
-    "news_outlook": "BULLISH",
-    "confidence": 21,
-    "article_count": 21,
-    "bullish_count": 11,
+    "news_score": 58.28,
+    "news_outlook": "NEUTRAL",
+    "confidence": 17,
+    "article_count": 18,
+    "bullish_count": 9,
     "bearish_count": 5,
-    "neutral_count": 5
+    "neutral_count": 4
   },
   "price": {
     "symbol": "RELIANCE.NS",
@@ -39,7 +39,7 @@
       },
       {
         "direction": "positive",
-        "title": "Reliance Power Share: Bull Case vs Bear Case for 2026 - Univest",
+        "title": "Reliance Power Share: Bull Case vs Bear Case for 2026 - univest.in",
         "source": "Google News - Company",
         "published": "Thu, 03 Sep 2026 18:45:53 GMT",
         "impact": 1,
@@ -47,25 +47,17 @@
       },
       {
         "direction": "positive",
-        "title": "Reliance Power Share Price: Buy or Sell - Univest",
+        "title": "Reliance Power Share Price: Buy or Sell - univest.in",
         "source": "Google News - Company",
         "published": "Thu, 03 Sep 2026 11:51:00 GMT",
         "impact": 1,
         "signal": 0.369
-      },
-      {
-        "direction": "mixed",
-        "title": "Reliance Power discloses CBI search at registered office - scanx.trade",
-        "source": "Google News - Company",
-        "published": "Fri, 04 Sep 2026 00:38:48 GMT",
-        "impact": 1,
-        "signal": 0.0
       }
     ],
     "news_used": {
-      "today": 3,
+      "today": 2,
       "yesterday": 1,
-      "used_total": 4
+      "used_total": 3
     },
     "explanation": "Reliance Power rose +1.50% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
@@ -77,17 +69,17 @@
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
-      "today_articles": 3,
+      "today_articles": 2,
       "yesterday_articles": 1,
-      "used_total": 4
+      "used_total": 3
     }
   },
   "prediction_news_window": {
-    "today_articles": 3,
+    "today_articles": 2,
     "yesterday_articles": 1,
-    "used_total": 4
+    "used_total": 3
   },
   "source_breakdown": {
-    "RSS": 21
+    "RSS": 18
   }
 }
