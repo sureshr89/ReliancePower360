@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-04T19:26:55.776706+00:00",
+  "generated_at": "2026-09-04T21:42:15.663387+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 60.72,
+    "news_score": 60.1,
     "news_outlook": "BULLISH",
-    "confidence": 21,
-    "article_count": 21,
-    "bullish_count": 11,
-    "bearish_count": 5,
-    "neutral_count": 5
+    "confidence": 20,
+    "article_count": 41,
+    "bullish_count": 16,
+    "bearish_count": 8,
+    "neutral_count": 17
   },
   "price": {
     "symbol": "RELIANCE.NS",
@@ -72,6 +72,7 @@
     "used_total": 2
   },
   "source_breakdown": {
+    "GDELT": 20,
     "RSS": 21
   }
 }
