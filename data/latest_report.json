@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-05T15:55:43.281172+00:00",
+  "generated_at": "2026-09-05T17:57:15.751742+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 60.98,
-    "news_outlook": "BULLISH",
-    "confidence": 22,
+    "news_score": 59.9,
+    "news_outlook": "NEUTRAL",
+    "confidence": 20,
     "article_count": 19,
     "bullish_count": 10,
     "bearish_count": 5,
