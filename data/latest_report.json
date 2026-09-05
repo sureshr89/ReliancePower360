@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T17:57:15.751742+00:00",
+  "generated_at": "2026-09-05T20:08:31.665429+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
@@ -28,56 +28,31 @@
     "why_up_down": "News and price are moving in the same positive direction."
   },
   "today_explanation": {
-    "today_drivers": [
-      {
-        "direction": "positive",
-        "title": "Reliance Power Share Price: Good Buy After Q1 FY27 Results? - Univest",
-        "source": "Google News - Company",
-        "published": "Fri, 04 Sep 2026 08:04:00 GMT",
-        "impact": 2,
-        "signal": 1.214
-      },
-      {
-        "direction": "positive",
-        "title": "Reliance Power Ltd is Rated Strong Sell - MarketsMojo",
-        "source": "Google News - Company",
-        "published": "Fri, 04 Sep 2026 05:54:21 GMT",
-        "impact": 1,
-        "signal": 0.571
-      },
-      {
-        "direction": "positive",
-        "title": "Reliance Power Share: Bull Case vs Bear Case for 2026 - Univest",
-        "source": "Google News - Company",
-        "published": "Thu, 03 Sep 2026 18:45:53 GMT",
-        "impact": 1,
-        "signal": 0.369
-      }
-    ],
+    "today_drivers": [],
+    "explanation": "No validated news from today or yesterday is available yet.",
     "news_used": {
       "today": 0,
-      "yesterday": 3,
-      "used_total": 3
-    },
-    "explanation": "Reliance Power rose +1.50% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
+      "yesterday": 0,
+      "used_total": 0
+    }
   },
   "forecast": {
     "current_session": {
-      "score": 83.8,
-      "outlook": "BULLISH",
+      "score": 51.5,
+      "outlook": "NEUTRAL",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
       "today_articles": 0,
-      "yesterday_articles": 3,
-      "used_total": 3
+      "yesterday_articles": 0,
+      "used_total": 0
     }
   },
   "prediction_news_window": {
     "today_articles": 0,
-    "yesterday_articles": 3,
-    "used_total": 3
+    "yesterday_articles": 0,
+    "used_total": 0
   },
   "source_breakdown": {
     "RSS": 19
