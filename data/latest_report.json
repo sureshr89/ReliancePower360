@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-05T09:28:35.632088+00:00",
+  "generated_at": "2026-09-05T12:58:34.811580+00:00",
   "company": "Reliance Power",
   "model_version": "2.0-today-yesterday-eod",
   "summary": {
-    "news_score": 59.46,
-    "news_outlook": "NEUTRAL",
-    "confidence": 19,
-    "article_count": 40,
+    "news_score": 60.3,
+    "news_outlook": "BULLISH",
+    "confidence": 21,
+    "article_count": 39,
     "bullish_count": 15,
     "bearish_count": 8,
-    "neutral_count": 17
+    "neutral_count": 16
   },
   "price": {
     "symbol": "RELIANCE.NS",
@@ -39,6 +39,14 @@
       },
       {
         "direction": "positive",
+        "title": "Reliance Power Ltd is Rated Strong Sell - MarketsMojo",
+        "source": "Google News - Company",
+        "published": "Fri, 04 Sep 2026 05:54:21 GMT",
+        "impact": 1,
+        "signal": 0.571
+      },
+      {
+        "direction": "positive",
         "title": "Reliance Power Share: Bull Case vs Bear Case for 2026 - Univest",
         "source": "Google News - Company",
         "published": "Thu, 03 Sep 2026 18:45:53 GMT",
@@ -48,31 +56,31 @@
     ],
     "news_used": {
       "today": 0,
-      "yesterday": 2,
-      "used_total": 2
+      "yesterday": 3,
+      "used_total": 3
     },
     "explanation": "Reliance Power rose +1.50% in the latest available price data. Today's and yesterday's published news are the primary evidence used for the current prediction."
   },
   "forecast": {
     "current_session": {
-      "score": 75.2,
+      "score": 83.8,
       "outlook": "BULLISH",
       "target": "Current / remaining market session"
     },
     "reason": "Current-session prediction uses only today and yesterday news as primary evidence, with current price momentum as supporting evidence.",
     "news_window": {
       "today_articles": 0,
-      "yesterday_articles": 2,
-      "used_total": 2
+      "yesterday_articles": 3,
+      "used_total": 3
     }
   },
   "prediction_news_window": {
     "today_articles": 0,
-    "yesterday_articles": 2,
-    "used_total": 2
+    "yesterday_articles": 3,
+    "used_total": 3
   },
   "source_breakdown": {
     "GDELT": 20,
-    "RSS": 20
+    "RSS": 19
   }
 }
